@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chá de Bebê • Convite & Lista</title>
+  <meta name="description" content="Convite do chá de bebê + lista de presentes com reserva por WhatsApp e PIX" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --brand:#e8a2b8; /* rosé */
+      --brand2:#b7dfb9; /* verde folha (sage) */
+      --ink:#243041;
+    }
+    html, body { font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color: var(--ink); }
+    .bg-baby {
+      background-color:#fff6f8;
+      background-image:
+        radial-gradient(1200px 800px at 20% -10%, #ffe3ec 0%, rgba(255,227,236,0) 60%),
+        radial-gradient(800px 600px at 110% 10%, #e0f5e3 0%, rgba(224,245,227,0) 60%),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><g fill='none' stroke='%23a6d5a7' stroke-width='1.1' stroke-opacity='0.55'><path d='M20 80c10-22 30-35 50-40-8 12-10 25-6 38-14-1-28 2-44 12z'/><path d='M120 30c15 8 24 22 26 34-11-6-22-7-33-4 3-10 4-19 7-30z'/><path d='M120 130c-12 10-27 15-42 15 7-8 10-17 10-26 10 5 21 7 32 11z'/></g><g fill='%23d7f0d9' fill-opacity='0.5'><circle cx='30' cy='40' r='3'/><circle cx='150' cy='90' r='2.5'/><circle cx='80' cy='150' r='2.5'/></g></svg>");
+      background-repeat: no-repeat, no-repeat, repeat;
+      background-size: cover, cover, 180px 180px;
+      background-attachment: fixed;
+    }
+    .card { background: white; border-radius: 1rem; box-shadow: 0 10px 30px rgba(30,41,59,.08); border: 1px solid rgba(232,162,184,.18); }
+    .ribbon { position: relative; }
+    .ribbon:before { content:""; position:absolute; inset:-2px; border-radius:1.05rem; padding:2px; background:linear-gradient(135deg, var(--brand), var(--brand2)); -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  </style>
+</head>
+<body class="bg-baby">
+  <!-- HERO / CONVITE -->
+  <header class="px-4 sm:px-6 lg:px-8 pt-10 pb-6">
+    <div class="max-w-5xl mx-auto card ribbon overflow-hidden">
+      <div class="grid md:grid-cols-2">
+        <div class="p-8 md:p-10">
+          <p class="text-sm tracking-widest text-slate-500">VOCÊ ESTÁ CONVIDADA(O)</p>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight mt-2">
+            Chá de Bebê <span class="text-[var(--brand)]">(é uma menina!)</span>
+          </h1>
+          <p class="mt-4 text-slate-600">Venha celebrar conosco a chegada da nossa bebê! 🩷🌿</p>
+
+          <dl class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div class="p-4 rounded-xl bg-white/60 border border-slate-200">
+              <dt class="text-slate-500">Data & Hora</dt>
+              <dd id="dtText" class="font-semibold">Sábado, 12 de outubro, 15:30</dd>
+            </div>
+            <div class="p-4 rounded-xl bg-white/60 border border-slate-200">
+              <dt class="text-slate-500">Local</dt>
+              <dd class="font-semibold">Salão de Festas — Condomínio</dd>
+            </div>
+            <div class="p-4 rounded-xl bg-white/60 border border-slate-200">
+              <dt class="text-slate-500">Traje/Clima</dt>
+              <dd class="font-semibold">Confortável & alegre (tons claros/rosé)</dd>
+            </div>
+            <div class="p-4 rounded-xl bg-white/60 border border-slate-200">
+              <dt class="text-slate-500">Confirmação</dt>
+              <dd class="font-semibold">Confirme no WhatsApp 🙏</dd>
+            </div>
+          </dl>
+
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a id="rsvpBtn" href="#rsvp" class="inline-flex items-center justify-center rounded-xl px-5 py-3 text-white font-semibold" style="background:linear-gradient(135deg, var(--brand), var(--brand2));">
+              Confirmar presença
+            </a>
+            <a href="#lista" class="inline-flex items-center justify-center rounded-xl px-5 py-3 border font-semibold border-slate-300 text-slate-700 hover:bg-white">
+              Ver lista de presentes
+            </a>
+          </div>
+
+          <div class="mt-6 text-sm text-slate-500">Falta <span id="countdown" class="font-semibold text-slate-700">—</span> para o grande dia!</div>
+        </div>
+        <div class="order-first md:order-last h-64 md:h-auto bg-[url('hero.jpeg')] bg-cover bg-center rounded-t-xl md:rounded-l-none md:rounded-r-xl"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="px-4 sm:px-6 lg:px-8 pb-24">
+    <div class="max-w-5xl mx-auto space-y-10">
+
+      <!-- PIX / PRESENTE EM DINHEIRO -->
+      <section id="pix" class="card p-6 md:p-8">
+        <h2 class="text-2xl font-bold">Quero presentear em PIX</h2>
+        <p class="mt-2 text-slate-600">Se preferir, você pode ajudar com qualquer valor. 💖</p>
+        <div class="mt-4 grid sm:grid-cols-[1fr_auto] gap-4 items-center">
+          <div>
+            <div class="text-sm text-slate-500">Chave PIX</div>
+            <div id="pixKey" class="text-lg font-semibold select-all break-all">SUA_CHAVE_PIX_AQUI</div>
+          </div>
+          <button class="px-4 py-2 rounded-lg font-semibold border border-slate-300 hover:bg-white" onclick="copyPix()">Copiar chave</button>
+        </div>
+        <div class="mt-3 text-xs text-slate-500">Banco: <span class="font-medium">Bradesco</span></div>
+        <div class="mt-3 flex items-center gap-4">
+          <img src="bradesco.png" alt="QR Code PIX" class="w-40 h-40 object-contain rounded-md border border-slate-200 bg-white" />
+          <div class="text-xs text-slate-500">Você pode <strong>escanear o QR</strong> pelo app do banco ou usar a chave acima.</div>
+        </div>
+      </section>
+
+      <!-- LISTA DE PRESENTES -->
+      <section id="lista" class="card p-6 md:p-8">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <h2 class="text-2xl font-bold">Lista de Presentes</h2>
+          <div class="flex gap-3 text-sm">
+            <label class="inline-flex items-center gap-2"><input type="radio" name="src" value="xlsx" checked> Carregar de <code>produtos.xlsx</code></label>
+            <label class="inline-flex items-center gap-2"><input type="radio" name="src" value="inline"> Itens do arquivo embutido</label>
+          </div>
+        </div>
+        <p class="mt-2 text-slate-600">Clique em <span class="font-medium">Reservar</span> para avisar no WhatsApp. Você também pode marcar um item como reservado (salvo apenas no seu navegador).</p>
+
+        <div class="mt-6 overflow-x-auto">
+          <table class="min-w-full text-left text-sm" id="giftTable">
+            <thead>
+              <tr class="border-b bg-slate-50 text-slate-600">
+                <th class="py-3 px-3">Item</th>
+                <th class="py-3 px-3">Detalhes</th>
+                <th class="py-3 px-3">Valor (R$)</th>
+                <th class="py-3 px-3">Reservado?</th>
+                <th class="py-3 px-3">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="giftTbody" class="divide-y"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- COMO CHEGAR / MAPA -->
+      <section id="mapa" class="card p-6 md:p-8">
+        <h2 class="text-2xl font-bold">Como chegar</h2>
+        <p class="mt-2 text-slate-600">Clique para abrir no Google Maps.</p>
+        <a id="mapLink" target="_blank" class="inline-flex mt-4 items-center justify-center rounded-xl px-5 py-3 text-white font-semibold" style="background:linear-gradient(135deg, var(--brand), var(--brand2));">
+          Abrir no Google Maps
+        </a>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq" class="card p-6 md:p-8">
+        <h2 class="text-2xl font-bold">Dúvidas frequentes</h2>
+        <div class="mt-4 grid md:grid-cols-2 gap-6">
+          <article>
+            <h3 class="font-semibold">Precisa levar fraldas?</h3>
+            <p class="text-slate-600">Fraldas e lenços são super bem-vindos (tamanhos P, M e G), mas fique à vontade para escolher da lista. 💙</p>
+          </article>
+          <article>
+            <h3 class="font-semibold">Tem estacionamento?</h3>
+            <p class="text-slate-600">Sim, há vagas de visitantes no condomínio. Chegue um pouquinho mais cedo.</p>
+          </article>
+          <article>
+            <h3 class="font-semibold">Posso levar crianças?</h3>
+            <p class="text-slate-600">Claro! Teremos um cantinho kids com brinquedos e papel para desenhar.</p>
+          </article>
+          <article>
+            <h3 class="font-semibold">Qual o traje?</h3>
+            <p class="text-slate-600">Roupas leves e confortáveis. Se quiser, venha nos tons do tema 😄</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- RSVP -->
+      <section id="rsvp" class="card p-6 md:p-8">
+        <h2 class="text-2xl font-bold">Confirmação de presença</h2>
+        <p class="mt-2 text-slate-600">Confirme no WhatsApp para nos organizarmos melhor. Obrigado! 💙</p>
+        <a id="whatsBtn" target="_blank" class="inline-flex mt-4 items-center justify-center rounded-xl px-5 py-3 text-white font-semibold" style="background:linear-gradient(135deg, var(--brand), var(--brand2));">
+          Enviar mensagem no WhatsApp
+        </a>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="text-center text-xs text-slate-500 pb-10">
+    Feito com carinho — © <span id="ano"></span>
+  </footer>
+
+  <script>
+    // === CONFIGURÁVEL: edite aqui os dados do convite ===
+    const CONFIG = {
+      datetime: '2025-10-12T15:30:00',
+      datetimeText: 'Sábado, 12 de outubro, 15:30',
+      mapsQuery: 'Residencial Nature Ville, Cabula, Salvador - BA',
+      pixKey: 'SUA_CHAVE_PIX_AQUI',
+      whatsapp: '5571999999999',
+      rsvpText: 'Olá! Quero confirmar presença no Chá de Bebê. Meu nome é: ',
+      reserveText: 'Olá! Quero reservar este presente do chá de bebê: ',
+      defaultSource: 'xlsx',
+      gifts: [
+        { nome:'Fraldas Pampers M', detalhe:'Pacote com 60', valor: 79.90 },
+        { nome:'Lenços umedecidos', detalhe:'Kit com 4 pacotes', valor: 39.90 },
+        { nome:'Macacão RN rosé', detalhe:'Algodão', valor: 54.90 },
+        { nome:'Naninha de pelúcia', detalhe:'Com folhas verdes', valor: 59.90 },
+        { nome:'Banheira dobrável', detalhe:'Compacta', valor: 159.90 },
+      ]
+    };
+
+    // === util: formatar número BRL ===
+    const fmtBRL = v => (v==null||v==='') ? '-' : Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+    // === countdown ===
+    function startCountdown() {
+      const el = document.getElementById('countdown');
+      const target = new Date(CONFIG.datetime);
+      function tick(){
+        const now = new Date();
+        let diff = Math.max(0, target - now);
+        const d = Math.floor(diff / 86400000); diff -= d*86400000;
+        const h = Math.floor(diff / 3600000);  diff -= h*3600000;
+        const m = Math.floor(diff / 60000);    diff -= m*60000;
+        const s = Math.floor(diff / 1000);
+        el.textContent = `${d}d ${h}h ${m}m ${s}s`;
+      }
+      tick(); setInterval(tick, 1000);
+    }
+
+    // === PIX ===
+    function copyPix(){
+      navigator.clipboard.writeText(CONFIG.pixKey).then(()=>{
+        alert('Chave PIX copiada!');
+      });
+    }
+
+    // === construir links ===
+    function buildLinks() {
+      document.getElementById('dtText').textContent = CONFIG.datetimeText;
+      document.getElementById('pixKey').textContent = CONFIG.pixKey;
+      document.getElementById('mapLink').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONFIG.mapsQuery)}`;
+      document.getElementById('whatsBtn').href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.rsvpText)}`;
+      document.getElementById('rsvpBtn').href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.rsvpText)}`;
+      document.getElementById('ano').textContent = new Date().getFullYear();
+    }
+
+    // === tabela de presentes ===
+    const tbody = document.getElementById('giftTbody');
+    const LOCAL_KEY = 'babyshower_reserved_v1';
+    const reserved = JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}');
+
+    function rowTpl(item, idx){
+      const isRes = !!reserved[item.nome];
+      return `
+        <tr class="align-top">
+          <td class="py-3 px-3 font-medium">${item.nome}</td>
+          <td class="py-3 px-3 text-slate-600">${item.detalhe||'-'}</td>
+          <td class="py-3 px-3">${fmtBRL(item.valor)}</td>
+          <td class="py-3 px-3">
+            <button data-idx="${idx}" class="toggleRes px-3 py-1 rounded-lg border ${isRes? 'bg-green-50 border-green-300 text-green-700' : 'border-slate-300 text-slate-700 hover:bg-white'}">
+              ${isRes? 'Marcado (local)' : 'Marcar' }
+            </button>
+          </td>
+          <td class="py-3 px-3">
+            <a target="_blank" class="reserveLink inline-flex items-center justify-center rounded-lg px-3 py-1 text-white" style="background:linear-gradient(135deg, var(--brand), var(--brand2));" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.reserveText)}${encodeURIComponent(item.nome)}%20-%20${encodeURIComponent(item.detalhe||'')}">
+              Reservar no WhatsApp
+            </a>
+          </td>
+        </tr>`;
+    }
+
+    function renderGiftTable(list){
+      tbody.innerHTML = list.map((it,i)=>rowTpl(it,i)).join('');
+      tbody.querySelectorAll('.toggleRes').forEach(btn=>{
+        btn.addEventListener('click', e=>{
+          const idx = e.currentTarget.getAttribute('data-idx');
+          const item = list[idx];
+          if (reserved[item.nome]) delete reserved[item.nome]; else reserved[item.nome] = true;
+          localStorage.setItem(LOCAL_KEY, JSON.stringify(reserved));
+          renderGiftTable(list);
+        });
+      })
+    }
+
+    async function loadFromXLSX(){
+      const res = await fetch('produtos.xlsx');
+      const arrayBuffer = await res.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, {type:'array'});
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, {defval:'', raw:true});
+      const list = rows.map(r=>({ nome:r.nome||r.item||r.Nome||r.Item||'', detalhe:r.detalhe||r.Detalhe||r.descricao||r.Descrição||'', valor:r.valor||r.preco||r.Preço||r.Valor||'' }));
+      return list.filter(x=>x.nome);
+    }
+
+    function loadInline(){ return CONFIG.gifts; }
+
+    async function bootGifts(){
+      const radios = document.querySelectorAll('input[name="src"]');
+      let currentSource = CONFIG.defaultSource;
+      radios.forEach(r=>{ if(r.value===CONFIG.defaultSource) r.checked = true; });
+      async function refresh(){
+        const list = currentSource==='xlsx' ? (await loadFromXLSX()) : loadInline();
+        renderGiftTable(list);
+      }
+      radios.forEach(r=>{ r.addEventListener('change', ()=>{ currentSource = r.value; refresh(); }) })
+      await refresh();
+    }
+
+    // init
+    (function init(){
+      buildLinks();
+      startCountdown();
+      bootGifts();
+    })();
+  </script>
+</body>
+</html>
