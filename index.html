@@ -179,6 +179,20 @@
     .leaf path{ fill: #E57BA4; }
     .leaf path + path{ fill: #3C8C6F; opacity: .85; }
 
+
+    /* === Full-page rose+leaves background === */
+    body{
+      background-color:#FFF0F6; /* soft rose */
+      background-image: url('rosas_folhas_rose.png');
+      background-repeat: repeat;
+      background-size: 960px auto;
+      background-attachment: fixed;
+      background-position: top center;
+    }
+    /* Give main content a subtle paper to keep readability */
+    .wrap{ background: rgba(255,246,250,.88); border-radius: 18px; padding: 12px; }
+    header.hero{ border-radius: 18px; overflow: hidden; }
+    
 </style>
 </head>
 <body>
@@ -195,11 +209,7 @@
     </div>
   </div>
 
-  <!-- ROSAS E FOLHAS (garlands) -->
-  <img class="garland top" src="rosas e folhas.png" alt="">
-  <img class="garland bottom" src="rosas e folhas.png" alt="">
-
-  <!-- DECORAÇÕES -->
+  <!-- ROSAS E FOLHAS (garlands) --><!-- DECORAÇÕES -->
   <svg class="decor left" viewBox="0 0 120 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs><linearGradient id="g1" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#E9B27A"/><stop offset="1" stop-color="#D77A57"/></linearGradient></defs>
     <g fill="url(#g1)" opacity=".7">
