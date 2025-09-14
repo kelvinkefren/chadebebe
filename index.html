@@ -498,6 +498,9 @@
  // IMAGEM DO TOPO
  heroImage: "hero.jpeg",
 
+ // QR estático na seção PIX
+ pixQrImageUrl: "bradesco.png",
+
  // Contato / RSVP / PIX
  whatsappNumber: "71988183846",
  rsvpFormUrl: "https://forms.gle/",
@@ -749,7 +752,7 @@
  qs('#copyPix').onclick = ()=>{ navigator.clipboard.writeText(CONFIG.pixKey||'').then(()=>{ const b=qs('#copyPix'); const t=b.textContent; b.textContent='Copiado!'; setTimeout(()=>b.textContent=t, 1200) }) };
 
  // HERO image
- const heroEl = document.getElementById('heroImageEl'); heroEl.setAttribute('href', CONFIG.heroImage);
+ const heroEl = document.getElementById('heroImageEl'); if (heroEl) { heroEl.src = CONFIG.heroImage; }
 
  // Dados dos produtos
  let data = null; try{ data = await fetchSheet(); }catch(e){ console.warn('fetchSheet err', e)}
