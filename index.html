@@ -1,663 +1,784 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chá de Bebê — Kelvin & Tamaiale</title>
-  <meta name="description" content="Chá de bebê — presentes, PIX e informações."
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <title>Chá de Bebê da Sophie</title>
+ <meta name="description" content="Chá de bebê da Sophie — presentes, Pix e informações."
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+ <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-  <style>
-    :root{
-      --paper:#FFF6FA;
-      --paper-2:#FFEAF1;
-      --ink:#2B1C1F;
-      --muted:#6a6063;
-      --accent:#E57BA4;
-      --accent-2:#3C8C6F;
-      --chip:#fff;
-      --edge:#F2C8D8;
-      --radius:18px;
-      --shadow:0 10px 30px rgba(0,0,0,.12);
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0; color:var(--ink); font-family:"Cormorant Garamond", ui-serif, Georgia, serif; background:var(--paper);}
-    body:before{content:""; position:fixed; inset:0; pointer-events:none; opacity:.30; mix-blend-mode:multiply;
-      background-image:
-        radial-gradient(1000px 600px at -10% -5%, var(--paper-2), transparent 55%),
-        radial-gradient(900px 600px at 110% 110%, var(--paper-2), transparent 55%),
-        radial-gradient(2px 2px at 20% 40%, rgba(0,0,0,.06), transparent 55%),
-        radial-gradient(2px 2px at 70% 60%, rgba(0,0,0,.05), transparent 55%),
-        radial-gradient(3px 3px at 40% 85%, rgba(0,0,0,.04), transparent 55%),
-        radial-gradient(3px 3px at 85% 25%, rgba(0,0,0,.04), transparent 55%);
-      background-repeat:no-repeat;
-    }
+ <style>
+ :root{
+ --paper:#FFF6FA;
+ --paper-2:#FFEAF1;
+ --ink:#2B1C1F;
+ --muted:#6a6063;
+ --accent:#E57BA4;
+ --accent-2:#3C8C6F;
+ --chip:#fff;
+ --edge:#F2C8D8;
+ --radius:18px;
+ --shadow:0 10px 30px rgba(0,0,0,.12);
+ }
+ *{box-sizing:border-box}
+ html,body{margin:0; color:var(--ink); font-family:"Cormorant Garamond", ui-serif, Georgia, serif; background:var(--paper);}
+ body:before{content:""; position:fixed; inset:0; pointer-events:none; opacity:.30; mix-blend-mode:multiply;
+ background-image:
+ radial-gradient(1000px 600px at -10% -5%, var(--paper-2), transparent 55%),
+ radial-gradient(900px 600px at 110% 110%, var(--paper-2), transparent 55%),
+ radial-gradient(2px 2px at 20% 40%, rgba(0,0,0,.06), transparent 55%),
+ radial-gradient(2px 2px at 70% 60%, rgba(0,0,0,.05), transparent 55%),
+ radial-gradient(3px 3px at 40% 85%, rgba(0,0,0,.04), transparent 55%),
+ radial-gradient(3px 3px at 85% 25%, rgba(0,0,0,.04), transparent 55%);
+ background-repeat:no-repeat;
+ }
 
-    /* Intro / Boas-vindas antes dos produtos */
-    .intro{ text-align:center; }
-    .intro h2{ 
-      margin: 0 0 8px;
-      font-size: clamp(22px, 3vw, 32px);
-      font-weight: 600;
-    }
-    .intro .subtitle{
-      color: var(--muted);
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      font-size: clamp(12px, 1.4vw, 14px);
-      margin-bottom: 22px;
-    }
-    .intro .leaf{
-      width: 84px; height: auto; opacity:.9; margin: 6px auto 18px;
-    }
-    .intro p{
-      max-width: 900px;
-      margin: 0 auto;
-      color: var(--muted);
-      line-height: 1.85;
-    }
+ /* Intro / Boas-vindas antes dos produtos */
+ .intro{ text-align:center; }
+ .intro h2{ 
+ margin: 0 0 8px;
+ font-size: clamp(22px, 3vw, 32px);
+ font-weight: 600;
+ }
+ .intro .subtitle{
+ color: var(--muted);
+ letter-spacing: .18em;
+ text-transform: uppercase;
+ font-size: clamp(12px, 1.4vw, 14px);
+ margin-bottom: 22px;
+ }
+ .intro .leaf{
+ width: 84px; height: auto; opacity:.9; margin: 6px auto 18px;
+ }
+ .intro p{
+ max-width: 900px;
+ margin: 0 auto;
+ color: var(--muted);
+ line-height: 1.85;
+ }
 
-    /* NAV */
-    .nav{position:sticky; top:0; z-index:20; background:color-mix(in oklab, var(--paper), white 30%); border-bottom:1px solid var(--edge);}
-    .nav .inner{max-width:1200px; margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:20px;}
-    .brand{font-weight:600; letter-spacing:.12em;}
-    .brand small{font-family:system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color:var(--muted); letter-spacing:0;}
-    .spacer{flex:1}
-    .menu{display:flex; gap:18px; align-items:center; font-family:system-ui, -apple-system, Segoe UI, Roboto, sans-serif}
-    .menu a{color:inherit; text-decoration:none; padding:8px 10px; border-radius:999px}
-    .menu a:hover{background:#fff; box-shadow:0 1px 0 rgba(0,0,0,.06);}
+ /* NAV */
+ .nav{position:sticky; top:0; z-index:20; background:color-mix(in oklab, var(--paper), white 30%); border-bottom:1px solid var(--edge);}
+ .nav .inner{max-width:1200px; margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:20px;}
+ .brand{font-weight:600; letter-spacing:.12em;}
+ .brand small{font-family:system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color:var(--muted); letter-spacing:0;}
+ .spacer{flex:1}
+ .menu{display:flex; gap:18px; align-items:center; font-family:system-ui, -apple-system, Segoe UI, Roboto, sans-serif}
+ .menu a{color:inherit; text-decoration:none; padding:8px 10px; border-radius:999px}
+ .menu a:hover{background:#fff; box-shadow:0 1px 0 rgba(0,0,0,.06);}
 
-    /* HERO PAPEL RASGADO */
-    .hero{position:relative; max-width:1200px; margin:24px auto 10px; padding:0 16px;}
-    .torn-wrap{position:relative; border-radius:0; box-shadow:var(--shadow)}
-    .torn{width:100%; height:auto; display:block; aspect-ratio:16/12;}
-    .hero-overlay{position:absolute; inset:auto 8% 10% 8%; text-align:center; color:white; text-shadow:0 1px 20px rgba(0,0,0,.35)}
-    .hero-date{font-size:clamp(16px,2vw,20px); letter-spacing:.22em}
-    .hero-names{font-family:"Great Vibes", cursive; font-weight:400; font-size:clamp(42px,5.6vw,74px); margin-top:10px}
+ /* HERO PAPEL RASGADO */
+ .hero{position:relative; max-width:1200px; margin:24px auto 10px; padding:0 16px;}
+ .torn-wrap{position:relative; border-radius:0; box-shadow:var(--shadow)}
+ .torn{width:100%; height:auto; display:block; aspect-ratio:16/12;}
+ .hero-overlay{position:absolute; inset:auto 8% 10% 8%; text-align:center; color:white; text-shadow:0 1px 20px rgba(0,0,0,.35)}
+ .hero-date{font-size:clamp(16px,2vw,20px); letter-spacing:.22em}
+ .hero-names{font-family:"Great Vibes", cursive; font-weight:400; font-size:clamp(42px,5.6vw,74px); margin-top:10px}
 
-    /* layout geral */
-    .wrap{max-width:1100px; margin:0 auto; padding:18px}
-    .section{margin:28px 0}
-    .title{font-weight:600; font-size:28px}
-    .muted{color:var(--muted)}
+ /* layout geral */
+ .wrap{max-width:1100px; margin:0 auto; padding:18px}
+ .section{margin:28px 0}
+ .title{font-weight:600; font-size:28px}
+ .muted{color:var(--muted)}
 
-    /* Cartões e botões */
-    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:18px}
-    .card{grid-column:span 12; border:1px solid var(--edge); background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
-    .card .body{padding:18px}
-    .btn{appearance:none; border:0; background:var(--accent); color:#fff; font-weight:600; padding:10px 14px; border-radius:999px; cursor:pointer}
-    .btn.alt{background:#fff; color:var(--ink); border:1px solid var(--edge)}
-    .btn.ghost{background:transparent; color:var(--ink); border:1px dashed var(--edge)}
-    .toolbar{display:flex; flex-wrap:wrap; gap:10px}
+ /* Cartões e botões */
+ .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:18px}
+ .card{grid-column:span 12; border:1px solid var(--edge); background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+ .card .body{padding:18px}
+ .btn{appearance:none; border:0; background:var(--accent); color:#fff; font-weight:600; padding:10px 14px; border-radius:999px; cursor:pointer}
+ .btn.alt{background:#fff; color:var(--ink); border:1px solid var(--edge)}
+ .btn.ghost{background:transparent; color:var(--ink); border:1px dashed var(--edge)}
+ .toolbar{display:flex; flex-wrap:wrap; gap:10px}
 
-    /* produtos */
-    .controls{display:flex; flex-wrap:wrap; gap:10px; margin:10px 0 16px}
-    .controls input, .controls select{background:#fff; border:1px solid var(--edge); padding:10px 12px; border-radius:12px; outline:none}
-    .products{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
-    @media(max-width:1000px){.products{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:640px){.products{grid-template-columns:1fr}}
-    /* No mobile, esconda as decorações para não poluir a leitura */
-    @media (max-width: 768px) {
-      .decor { display: none; }
-    }
-    .product{background:#fff; border:1px solid var(--edge); border-radius:16px; overflow:hidden; display:flex; flex-direction:column}
-    .product .img{aspect-ratio:4/3; background:#eee; display:grid; place-items:center; position:relative; overflow:hidden}
-    .product .img img{width:100%; height:100%; object-fit:cover; display:block}
-    .product .content{padding:14px; display:flex; flex-direction:column; gap:8px}
-    .product .price{font-weight:700}
-    .product .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:auto}
-    .tiny{font-size:12px; color:var(--muted)}
-    footer{opacity:.9; margin:40px 0 80px; text-align:center}
+ /* produtos */
+ .controls{display:flex; flex-wrap:wrap; gap:10px; margin:10px 0 16px}
+ .controls input, .controls select{background:#fff; border:1px solid var(--edge); padding:10px 12px; border-radius:12px; outline:none}
+ .products{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+ @media(max-width:1000px){.products{grid-template-columns:repeat(2,1fr)}}
+ @media(max-width:640px){.products{grid-template-columns:1fr}}
+ /* No mobile, esconda as decorações para não poluir a leitura */
+ @media (max-width: 768px) {
+ .decor { display: none; }
+ }
+ .product{background:#fff; border:1px solid var(--edge); border-radius:16px; overflow:hidden; display:flex; flex-direction:column}
+ .product .img{aspect-ratio:4/3; background:#eee; display:grid; place-items:center; position:relative; overflow:hidden}
+ .product .img img{width:100%; height:100%; object-fit:cover; display:block}
+ .product .content{padding:14px; display:flex; flex-direction:column; gap:8px}
+ .product .price{font-weight:700}
+ .product .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:auto}
+ .tiny{font-size:12px; color:var(--muted)}
+ footer{opacity:.9; margin:40px 0 80px; text-align:center}
 
-    /* elementos decorativos (folhas) */
-    .decor{
-      position: fixed;
-      z-index: -0.9;          /* empurra abaixo de qualquer item da página */
-      opacity: .7;
-      pointer-events: none; /* continua sem “pegar” cliques */
-    }
-    .decor.left{left:-60px; top:110px; width:220px}
-    .decor.right{right:-40px; bottom:90px; width:240px}
+ /* elementos decorativos (folhas) */
+ .decor{
+ position: fixed;
+ z-index: -0.9; /* empurra abaixo de qualquer item da página */
+ opacity: .7;
+ pointer-events: none; /* continua sem “pegar” cliques */
+ }
+ .decor.left{left:-60px; top:110px; width:220px}
+ .decor.right{right:-40px; bottom:90px; width:240px}
 
-    /* === PIX bloco === */
-    .pix-row{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:10px}
-    .pix-qr{display:flex; justify-content:center; margin-top:14px}
+ /* === PIX bloco === */
+ .pix-row{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:10px}
+ .pix-qr{display:flex; justify-content:center; margin-top:14px}
 
-    /* === Overlay descrição no hover da imagem === */
-    .product .img .hover-desc{
-      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-      text-align:center; padding:12px; color:#fff;
-      background:linear-gradient(180deg, rgba(0,0,0,0) 10%, rgba(0,0,0,.68) 85%);
-      opacity:0; transform:translateY(8px);
-      transition:opacity .25s ease, transform .25s ease;
-      pointer-events:none; font-size:14px; line-height:1.35;
-    }
-    .product .img:hover .hover-desc{opacity:1; transform:translateY(0)}
+ /* === Overlay descrição no hover da imagem === */
+ .product .img .hover-desc{
+ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+ text-align:center; padding:12px; color:#fff;
+ background:linear-gradient(180deg, rgba(0,0,0,0) 10%, rgba(0,0,0,.68) 85%);
+ opacity:0; transform:translateY(8px);
+ transition:opacity .25s ease, transform .25s ease;
+ pointer-events:none; font-size:14px; line-height:1.35;
+ }
+ .product .img:hover .hover-desc{opacity:1; transform:translateY(0)}
 
-    /* ===== Modal PIX ===== */
-    .modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-      background:rgba(0,0,0,.55); z-index:60; padding:18px}
-    .modal.show{display:flex}
-    .modal .box{width:100%; max-width:520px; background:#fff; color:var(--ink);
-      border:1px solid var(--edge); border-radius:16px; box-shadow:var(--shadow); padding:18px}
-    .modal .box h3{margin:0 0 8px 0; font-size:22px}
-    .modal .box .muted{margin-top:4px}
-    .modal .qr{display:flex; justify-content:center; margin:14px 0}
-    .modal .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .modal .code{width:100%; min-height:90px; border:1px solid var(--edge);
-      border-radius:12px; padding:10px; font-family:ui-monospace, SFMono-Regular, Menlo, monospace}
-    .modal .actions{display:flex; gap:10px; margin-top:10px; justify-content:flex-end}
-    .modal .close{appearance:none; border:0; background:#fff; border:1px solid var(--edge);
-      border-radius:999px; padding:6px 10px; cursor:pointer}
-  
-    /* === Baby shower theme additions === */
-    .decor{ display:none !important; } /* hide old copper leaf shapes */
+ /* ===== Modal PIX ===== */
+ .modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+ background:rgba(0,0,0,.55); z-index:60; padding:18px}
+ .modal.show{display:flex}
+ .modal .box{width:100%; max-width:520px; background:#fff; color:var(--ink);
+ border:1px solid var(--edge); border-radius:16px; box-shadow:var(--shadow); padding:18px}
+ .modal .box h3{margin:0 0 8px 0; font-size:22px}
+ .modal .box .muted{margin-top:4px}
+ .modal .qr{display:flex; justify-content:center; margin:14px 0}
+ .modal .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+ .modal .code{width:100%; min-height:90px; border:1px solid var(--edge);
+ border-radius:12px; padding:10px; font-family:ui-monospace, SFMono-Regular, Menlo, monospace}
+ .modal .actions{display:flex; gap:10px; margin-top:10px; justify-content:flex-end}
+ .modal .close{appearance:none; border:0; background:#fff; border:1px solid var(--edge);
+ border-radius:999px; padding:6px 10px; cursor:pointer}
+ 
+ /* === Baby shower theme additions === */
+ .decor{ display:none !important; } /* hide old copper leaf shapes */
 
-    /* Rose + green garlands */
-    .garland{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(1200px, 96vw);
-      max-height: 30vh;
-      object-fit: contain;
-      pointer-events: none;
-      z-index: 0;
-      opacity: .95;
-      filter: drop-shadow(0 8px 18px rgba(0,0,0,.10));
-    }
-    .garland.top{ top: -10px; }
-    .garland.bottom{ bottom: -20px; transform: translateX(-50%) rotate(180deg); }
+ /* Rose + green garlands */
+ .garland{
+ position: fixed;
+ left: 50%;
+ transform: translateX(-50%);
+ width: min(1200px, 96vw);
+ max-height: 30vh;
+ object-fit: contain;
+ pointer-events: none;
+ z-index: 0;
+ opacity: .95;
+ filter: drop-shadow(0 8px 18px rgba(0,0,0,.10));
+ }
+ .garland.top{ top: -10px; }
+ .garland.bottom{ bottom: -20px; transform: translateX(-50%) rotate(180deg); }
 
-    /* Softer cards on the pink paper */
-    .card, .product{ border-color: var(--edge); box-shadow: 0 12px 30px rgba(229, 123, 164, .08); }
-    .btn{ background: var(--accent); }
-    .btn.alt{ border-color: var(--edge); }
-    .leaf path{ fill: #E57BA4; }
-    .leaf path + path{ fill: #3C8C6F; opacity: .85; }
+ /* Softer cards on the pink paper */
+ .card, .product{ border-color: var(--edge); box-shadow: 0 12px 30px rgba(229, 123, 164, .08); }
+ .btn{ background: var(--accent); }
+ .btn.alt{ border-color: var(--edge); }
+ .leaf path{ fill: #E57BA4; }
+ .leaf path + path{ fill: #3C8C6F; opacity: .85; }
 
+ /* === Full-page rose+leaves background === */
+ body{
+ background-color:#FFF0F6; /* soft rose */
+ background-image: linear-gradient(to bottom, rgba(255,240,246,0) 60%, rgba(255,240,246,1) 60%), url('rosas_folhas_rose.png');
+ background-repeat: repeat;
+ background-size: 960px auto;
+ background-attachment: fixed;
+ background-position: top center;
+ }
+ /* Give main content a subtle paper to keep readability */
+ .wrap{ background: rgba(255,246,250,.88); border-radius: 18px; padding: 12px; }
+ header.hero{ border-radius: 18px; overflow: hidden; }
+ 
 
-    /* === Full-page rose+leaves background === */
-    body{
-      background-color:#FFF0F6; /* soft rose */
-      background-image: url('rosas_folhas_rose.png');
-      background-repeat: repeat;
-      background-size: 960px auto;
-      background-attachment: fixed;
-      background-position: top center;
-    }
-    /* Give main content a subtle paper to keep readability */
-    .wrap{ background: rgba(255,246,250,.88); border-radius: 18px; padding: 12px; }
-    header.hero{ border-radius: 18px; overflow: hidden; }
-    
+/* === Split hero (invite style) === */
+.hero-split{
+ display:grid;
+ grid-template-columns: 1.15fr 1fr;
+ gap: 24px;
+ align-items: stretch;
+ background: rgba(255,246,250,.92);
+ border-radius: 18px;
+ padding: 20px;
+ box-shadow: 0 18px 50px rgba(0,0,0,.06);
+}
+.hero-left{ padding: 8px 10px 14px; position: relative; }
+.hero-title{
+ font-size: clamp(28px, 5vw, 48px);
+ line-height: 1.02;
+ font-weight: 800;
+ letter-spacing: -0.5px;
+ margin: 0 0 10px;
+}
+.hero-title .pink{ color:#E57BA4; }
+.hero-sub{
+ color: var(--muted);
+ margin-bottom: 14px;
+}
+.info-grid{
+ display:grid;
+ grid-template-columns: repeat(2, minmax(0, 1fr));
+ gap: 14px;
+ margin: 12px 0 18px;
+}
+.info-card{
+ background: #fff;
+ border: 1px solid var(--edge);
+ border-radius: 14px;
+ padding: 14px 16px;
+ box-shadow: 0 8px 18px rgba(0,0,0,.04);
+}
+.info-card .label{
+ font-size: 12px;
+ color: var(--muted);
+ margin-bottom: 6px;
+}
+.info-card .value{ font-weight: 700; }
+.hero-actions{ display:flex; gap: 12px; flex-wrap: wrap; }
+.btn.primary{ background: linear-gradient(90deg, #E57BA4, #F2C8D8); color: #fff; border:none; }
+.btn.primary[disabled]{ opacity:.6; cursor:not-allowed; }
+.hero-countdown{ font-size: 14px; color: var(--muted); margin-top: 10px; }
+
+.hero-right{
+ border-radius: 16px;
+ overflow:hidden;
+ background:#000;
+ display:flex; align-items:center; justify-content:center;
+}
+.hero-right img{ width:100%; height:100%; object-fit: cover; }
+@media (max-width: 860px){
+ .hero-split{ grid-template-columns: 1fr; padding: 12px; }
+ .hero-right{ height: 54vw; }
+}
+
+/* === Compact hero sizing === */
+.hero-first{ padding: 8px 0 6px !important; }
+.hero-split{
+ gap: 16px;
+ padding: 14px;
+ height: clamp(280px, 42vw, 420px); /* <= caps the height */
+}
+.hero-left{ padding: 6px 8px 8px; }
+.hero-title{ font-size: clamp(26px, 4.4vw, 40px); margin-bottom: 6px; }
+.hero-sub{ margin-bottom: 8px; }
+
+.info-grid{ gap: 10px; margin: 6px 0 10px; }
+.info-card{ padding: 10px 12px; border-radius: 12px; }
+.info-card .label{ font-size: 11px; margin-bottom: 4px; }
+
+.hero-actions{ gap: 10px; }
+.btn{ padding: 10px 14px; font-size: 14px; }
+
+.hero-right{ height: 100%; }
+.hero-right img{ height: 100%; object-fit: cover; }
+
+@media (max-width: 1024px){
+ .hero-split{ height: clamp(260px, 52vw, 380px); }
+}
+@media (max-width: 860px){
+ .hero-first{ padding: 6px 0 4px !important; }
+ .hero-split{ grid-template-columns: 1fr; height: auto; }
+ .hero-right{ height: 58vw; }
+}
+
+/* === Narrower hero width + smaller photo column === */
+.hero-split{
+ max-width:1100px; width: 100%; /* limit overall width */
+ margin: 0 auto; /* center */
+ grid-template-columns: 1.15fr 0.75fr; /* reduce photo column */
+}
+.hero-right{ max-width: 440px; } /* extra guard so photo doesn't dominate */
+@media (max-width: 1200px){
+ .hero-split{ max-width:1100px; width: 100%; grid-template-columns: 1.1fr 0.8fr; }
+ .hero-right{ max-width: 420px; }
+}
+
+/* === Lighter (near-white) blocks === */
+.wrap{ background: rgba(255,255,255,.88) !important; }
+.hero-split{ background: rgba(255,255,255,.94) !important; }
+.info-card{ background:#ffffff !important; border-color:#f0e6ee !important; }
+.intro, .card, .product, .panel, .pix-card, .box{
+ background:#ffffff !important;
+ border-color:#f0e6ee !important;
+ border-radius:14px;
+ box-shadow: 0 10px 26px rgba(0,0,0,.05);
+ padding: 12px;
+}
+/* Buttons unchanged; just ensure text remains readable on light bg */
+.btn.alt{ background:#ffffff; }
+
 </style>
 </head>
 <body>
-  <!-- NAV -->
-  <div class="nav">
-    <div class="inner">
-      <div class="brand">K + T <small>27 · 08 · 2025</small></div>
-      <div class="spacer"></div>
-      <nav class="menu">
-        <a href="#presentes">Presentes</a>
-        <a href="#rsvp">Contato</a>
-        <a href="#pix">PIX</a>
-      </nav>
-    </div>
-  </div>
+ <!-- NAV -->
+ <div class="nav">
+ <div class="inner">
+ <div class="brand">K + T <small>27 · 08 · 2025</small></div>
+ <div class="spacer"></div>
+ <nav class="menu">
+ <a href="#presentes">Presentes</a>
+ <a href="#rsvp">Contato</a>
+ <a href="#pix">PIX</a>
+ </nav>
+ </div>
+ </div>
 
-  <!-- ROSAS E FOLHAS (garlands) --><!-- DECORAÇÕES -->
-  <svg class="decor left" viewBox="0 0 120 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <defs><linearGradient id="g1" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#E9B27A"/><stop offset="1" stop-color="#D77A57"/></linearGradient></defs>
-    <g fill="url(#g1)" opacity=".7">
-      <path d="M20 10c22 36-2 60-10 92-6 26 9 46 40 64-12-32-4-52 9-72 14-22 9-52-39-84z"/>
-      <path d="M70 45c18 28-3 45-13 67-8 19 4 34 28 48-8-24-3-39 6-54 10-17 6-39-21-61z"/>
-    </g>
-  </svg>
-  <svg class="decor right" viewBox="0 0 140 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <g fill="#E3B98C" opacity=".75">
-      <path d="M80 15c28 30 14 60 7 86-7 27 7 50 35 76-10-34-6-56 5-78 12-24 0-55-47-84z"/>
-      <path d="M30 70c20 22 8 40 2 57-5 17 4 33 22 49-9-22-6-37 1-50 8-15 3-36-25-56z"/>
-    </g>
-  </svg>
+ <!-- ROSAS E FOLHAS (garlands) --><!-- DECORAÇÕES -->
+ <svg class="decor left" viewBox="0 0 120 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+ <defs><linearGradient id="g1" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#E9B27A"/><stop offset="1" stop-color="#D77A57"/></linearGradient></defs>
+ <g fill="url(#g1)" opacity=".7">
+ <path d="M20 10c22 36-2 60-10 92-6 26 9 46 40 64-12-32-4-52 9-72 14-22 9-52-39-84z"/>
+ <path d="M70 45c18 28-3 45-13 67-8 19 4 34 28 48-8-24-3-39 6-54 10-17 6-39-21-61z"/>
+ </g>
+ </svg>
+ <svg class="decor right" viewBox="0 0 140 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+ <g fill="#E3B98C" opacity=".75">
+ <path d="M80 15c28 30 14 60 7 86-7 27 7 50 35 76-10-34-6-56 5-78 12-24 0-55-47-84z"/>
+ <path d="M30 70c20 22 8 40 2 57-5 17 4 33 22 49-9-22-6-37 1-50 8-15 3-36-25-56z"/>
+ </g>
+ </svg>
 
-  <!-- HERO com máscara "papel rasgado" -->
-  <header class="hero" id="topo">
-    <div class="torn-wrap">
-      <svg class="torn" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" aria-label="Foto do casal">
-        <defs>
-          <clipPath id="tornMask" clipPathUnits="objectBoundingBox">
-            <path d="M0.00,0.00
-                     C0.10,0.01,0.20,0.05,0.30,0.00
-                     C0.40,0.01,0.60,0.05,0.70,0.00
-                     C0.80,0.01,0.90,0.05,1.00,0.00
-                     L1.00,0.95
-                     C0.90,0.97,0.80,0.93,0.70,0.95
-                     C0.60,0.97,0.40,0.93,0.30,0.95
-                     C0.20,0.97,0.10,0.93,0.00,0.95 Z" />
-          </clipPath>
-        </defs>
-        <image id="heroImageEl" clip-path="url(#tornMask)" href="" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" y="50"/>
-      </svg>
-      <div class="hero-overlay">
-        <div class="hero-date">27 · 08 · 2025</div>
-        <div class="hero-names">Kelvin & Tamaiale</div>
-      </div>
-    </div>
-  </header>
+ <!-- HERO com máscara "papel rasgado" -->
+ 
+<header class="section hero-first">
+ <div class="hero-split">
+ <div class="hero-left">
+ <div class="eyebrow" style="font-size:12px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; margin-bottom:8px;">
+ Você está convidado(a)
+ </div>
+ <h1 class="hero-title">Chá de Bebê da nossa menina <span class="pink">Sophie</span></h1>
+ <p class="hero-sub">Vamos celebrar a chegada da <strong>Sophie</strong>. 💕</p>
 
-  <main class="wrap">
-    <!-- BOAS-VINDAS -->
-    <section id="boasvindas" class="section intro">
-      <h2>Sejam bem-vindos ao nosso site!</h2>
-      <div class="subtitle">A melhor forma de compartilhar esse momento com vocês é unindo sonhos.</div>
+ <div class="info-grid">
+ <div class="info-card">
+ <div class="label">Data & Hora</div>
+ <div class="value"><strong>Sábado, 12 de outubro, 15:30</strong></div>
+ </div>
+ <div class="info-card">
+ <div class="label">Local</div>
+ <div class="value"><strong>Salão de Festas — Condomínio</strong></div>
+ </div>
+ <div class="info-card">
+ <div class="label">Traje/Clima</div>
+ <div class="value">Confortável e em tons claros/rosé</div>
+ </div>
+ <div class="info-card">
+ <div class="label">Confirmação</div>
+ <div class="value">Confirme no WhatsApp 💕</div>
+ </div>
+ </div>
 
-      <!-- folhinha decorativa (opcional) -->
-      <svg class="leaf" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path fill="#E9B27A" d="M8 40c18-18 42-26 68-22-6 6-15 12-26 15 16 2 29-3 40-13-4 15-16 25-33 28-12 2-28-1-49-8z"/>
-        <path fill="#D77A57" opacity=".8" d="M18 43c14-10 30-14 47-12-5 4-12 8-20 9 14 2 25-2 35-10-4 11-13 18-27 20-10 1-23-1-35-7z"/>
-      </svg>
+ <div class="hero-actions">
+ <a class="btn primary" href="#" aria-disabled="true">Confirmar presença</a>
+ <a class="btn alt" href="#presentes">Ver lista de presentes</a>
+ </div>
+ <div class="hero-countdown">Falta <span id="heroCountdown">...</span> para o grande dia!</div>
+ </div>
 
-      <p>
-        Amigos e familiares, este ano tem sido intenso e especial: estamos nos casando,
-        preparando a chegada da nossa filha e montando nosso primeiro apartamento. Ufa!
-        Muita alegria, correria e um mundo de novidades por aqui  \o/.
-      </p>
-      <p>
-        Muita gente querida não está tão pertinho, e nos sugeriram criar este site para
-        que quem quiser e puder participe de alguma forma. Aqui dá para escolher um presente
-        da lista ou contribuir, tudo via Pix — cada gesto, grande ou pequeno, faz diferença e nos
-        ajuda a construir esse começo com mais carinho e menos aperto.
-      </p>
-      <p>
-        Se a melhor forma de estar com a gente for enviar uma mensagem, uma oração ou um
-        abraço no grande dia, já ficaremos felizes demais. Obrigado por torcerem por nós
-        e por fazerem parte desta nova fase. <br>
-        Com amor, Kelvin, Tamaiale e nossa pequena Sophie. 💚
-      </p>
+ <div class="hero-right">
+ <img src="hero.jpeg" alt="Kelvin e Tamaiale">
+ </div>
+ </div>
+</header>
 
-      <p>
-        <strong>OBS:</strong> Todos os produtos do site geram automaticamente um QR Code de Pix para o Kelvin (Nubank). 
-        Como o código é feito de forma automática, pedimos que confiram os dados antes de finalizar a transferência. 💳
-      </p>
-      <p>
-        <strong>OBS2:</strong> Teremos também um chá de bebê em breve — será um momento especial para nos reunirmos, 
-        celebrar a chegada da nossa filha e compartilhar essa fase tão feliz com vocês. 🎀👶  
-        Mais detalhes serão enviados em breve!
-      </p>
-    </section>
-
-    <!-- PIX -->
-    <section id="pix" class="section">
-      <div class="grid">
-        <div class="card">
-          <div class="body">
-            <div class="title">Contribuir via PIX</div>
-            <p class="muted">Se preferir, você pode presentear com qualquer valor via Pix. 💚</p>
-
-            <!-- Chave PIX centralizada com botão ao lado -->
-            <div class="pix-row">
-              <span class="btn alt" id="pixKeyText">(configure a chave no código)</span>
-              <button class="btn" id="copyPix">Copiar chave</button>
-            </div>
-
-            <!-- QR code estático centralizado (opcional) -->
-            <div class="pix-qr">
-              <img id="pixQrImg" alt="QR Code Pix" style="max-width:320px;border-radius:12px;border:1px solid var(--edge)"/>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    
-    <!-- PRESENTES -->
-    <section id="presentes" class="section">
-      <div class="title">Lista de Presentes</div>
-      <p class="muted">Escolha um item e clique em <strong>Comprar</strong> para gerar o QR Code Pix com o valor exato do presente. ✨</p>
-      <div class="controls">
-        <input id="q" type="search" placeholder="Buscar por nome, categoria..."/>
-        <select id="cat"></select>
-        <select id="sort">
-          <option value="prioridade">Ordenar: prioridade</option>
-          <option value="preco-asc">Preço: menor → maior</option>
-          <option value="preco-desc">Preço: maior → menor</option>
-          <option value="titulo">A-Z</option>
-        </select>
-        <label style="display:inline-flex;gap:8px;align-items:center"><input id="onlyAvail" type="checkbox"/> <span class="tiny">Apenas disponíveis</span></label>
-        <button class="btn alt" id="refresh">Atualizar</button>
-      </div>
-      <div id="products" class="products"></div>
-      <div id="emptyState" class="muted" style="display:none">Nenhum item encontrado.</div>
-    </section>
-  
-
-    <!-- RSVP / LOCAL -->
-    <section id="rsvp" class="section">
-      <div class="grid">
-        <div class="card"><div class="body">
-          <div class="title">Contato</div>
-          <p class="muted">Use o botão abaixo para falar com a gente por WhatsApp. 💬</p>
-          <div class="toolbar">
-            <a class="btn alt" id="whatsContact" target="_blank" rel="noopener">Falar no Whats</a>
-          </div>
-        </div></div>
-        <div class="card"><div class="body">
-          <div class="title">Detalhes do Evento</div>
-          <div class="muted" id="dateFull"></div>
-          <div class="muted">Local: <strong id="venueFull">—</strong></div>
-          <div class="muted">Endereço: <strong id="address"></strong></div>
-          <div class="toolbar" style="margin-top:10px">
-            <a class="btn alt" id="venueMap2" target="_blank" rel="noopener">Abrir mapa</a>
-          </div>
-        </div></div>
-      </div>
-    </section>
-
-    <footer class="muted">Feito com carinho 💚 — publique no GitHub Pages (coloque <code>index.html</code>, <code>produtos.xlsx</code> e sua foto <code>hero.jpeg</code> na mesma pasta).</footer>
-  </main>
-
-  <!-- Modal PIX por produto -->
-  <div id="pixModal" class="modal" aria-hidden="true">
-    <div class="box">
-      <div class="row" style="justify-content:space-between">
-        <h3 id="pixModalTitle">Pagar com Pix</h3>
-        <button class="close" id="pixModalClose">Fechar</button>
-      </div>
-      <div class="muted" id="pixModalSubtitle"></div>
-
-      <div class="qr"><img id="pixModalImg" alt="QR Code Pix" style="max-width:320px;border-radius:12px;border:1px solid var(--edge)"></div>
-
-      <textarea id="pixModalCode" class="code" readonly></textarea>
-      <div class="actions">
-        <button class="btn alt" id="pixCopyCode">Copiar código Pix</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-  // =====================
-  // CONFIGURAÇÕES
-  // =====================
-  const CONFIG = {
-    initialsLogo: "K + T",
-    coupleNames: "Kelvin & Tamaiale",
-    dateNumbers: "27 · 08 · 2025",
-    weddingDateISO: "2025-08-27T12:00:00-03:00",
-    venueName: "Cartório Vitória",
-    venueAddress: "R. Professor Martagão Gesteira, 477 - Graça, Salvador",
-    mapsLink: "https://www.google.com/maps/place/Cart%C3%B3rio+de+Registro+Civil+das+Pessoas+Naturais+do+Subdistrito+da+Vit%C3%B3ria/@-13.002347,-38.522519,17z",
-
-    // IMAGEM DO TOPO
-    heroImage: "hero.jpeg",
-
-    // Contato / RSVP / PIX
-    whatsappNumber: "71988183846",
-    rsvpFormUrl: "https://forms.gle/",
-    pixKey: "+5571988183846",
-    // Nome e cidade impressos no payload PIX (CAIXA ALTA, limites oficiais)
-    pixName: "KELVIN KEFREN CARVALHO FE", // máx. 25 chars
-    pixCity: "SALVADOR",                  // máx. 15 chars
-
-    // QR estático opcional na seção PIX
-    pixQrImageUrl: "bradesco.png",
-
-    // Planilha: escolha SÓ UMA fonte (xlsx local OU sheetUrl)
-    sheetUrl: "",
-    localExcelFile: "produtos.xlsx",
-    localCsvFile: "",
-    moeda: "BRL",
-    autoRefreshMinutes: 5
-  };
-
-  // ========= Utils
-  const qs = s => document.querySelector(s);
-  const el = (tag, attrs={}) => Object.assign(document.createElement(tag), attrs);
-  const fmtBRL = v => new Intl.NumberFormat('pt-BR',{style:'currency',currency:CONFIG.moeda}).format((v===undefined||v===null||isNaN(v))?0:Number(v));
-  const DEFAULT_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600'><rect fill='%23eee' width='100%' height='100%'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-family='sans-serif' font-size='24'>Sem imagem</text></svg>";
-
-  function normHeader(h){return String(h||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'').trim()}
-  function splitCSV(line){const out=[];let cur='';let q=false;for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){q=!q;continue}if(ch===','&&!q){out.push(cur);cur='';continue}cur+=ch}out.push(cur);return out.map(s=>s.trim())}
-  function toNumber(x){if(typeof x==='number') return x; if(!x) return 0; const s=String(x).replace(/[^0-9,.-]/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',', '.'); const n=parseFloat(s); return isNaN(n)?0:n}
-  function normalizeItem(o,i){const map={};for(const k in o) map[normHeader(k)]=o[k];return {
-    id:String(map.id||i+1), status:String(map.status||'disponivel').toLowerCase().trim(),
-    categoria:String(map.categoria||'Outros').trim(), titulo:String(map.titulo||'Item').trim(),
-    descricao:String(map.descricao||'').trim(), preco:toNumber(map.preco),
-    link:String(map.link||map.loja||'').trim(), imagem:String(map.imagem||map.foto||'').trim(),
-    prioridade: parseInt(map.prioridade||(i+1),10) || (i+1)
-  }}
-
-  // ====== Leitura da planilha (xlsx/csv/sheets)
-  async function fetchSheet(){
-    // 1) XLSX local
-    if (CONFIG.localExcelFile && CONFIG.localExcelFile.trim()){
-      const buf = await fetch(CONFIG.localExcelFile).then(r=>{if(!r.ok) throw new Error('Falha ao carregar '+CONFIG.localExcelFile); return r.arrayBuffer()});
-      const wb = XLSX.read(buf, {type:'array'});
-      let ws = wb.Sheets[wb.SheetNames[0]];
-      for (const n of wb.SheetNames){const rows = XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, defval:''});if(rows.length>1){ws = wb.Sheets[n];break}}
-      const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
-      const headers = (rows.shift()||[]).map(normHeader);
-      return rows.filter(r=>r.some(v=>String(v).trim().length>0)).map((cells,i)=>{const o={}; headers.forEach((h,idx)=>o[h]=cells[idx]??''); return normalizeItem(o,i)})
-    }
-    // 2) CSV local
-    if (CONFIG.localCsvFile && CONFIG.localCsvFile.trim()){
-      const text = await fetch(CONFIG.localCsvFile).then(r=>{if(!r.ok) throw new Error('Falha ao carregar '+CONFIG.localCsvFile); return r.text()});
-      const rows = text.split(/\r?\n/).filter(Boolean).map(splitCSV);
-      const headers = (rows.shift()||[]).map(normHeader);
-      return rows.map((cells,i)=>{const o={}; headers.forEach((h,idx)=>o[h]=cells[idx]||''); return normalizeItem(o,i)})
-    }
-    // 3) Google Sheets (opcional)
-    if (!CONFIG.sheetUrl) return null;
-    const raw = CONFIG.sheetUrl.trim();
-    const urls = [/^https?:/.test(raw)? raw : `https://docs.google.com/spreadsheets/d/${raw}/gviz/tq?tqx=out:json`, 'https://r.jina.ai/http://'+raw.replace(/^https?:\/\//,'')];
-    for (const url of urls){
-      try{
-        const text = await fetch(url).then(r=>{if(!r.ok) throw new Error('HTTP '+r.status); return r.text()});
-        if(url.includes('tqx=out:json')){
-          const start=text.indexOf('{'); const end=text.lastIndexOf('}'); if(start<0||end<0) continue;
-          const data = JSON.parse(text.slice(start,end+1));
-          const cols=(data.table?.cols||[]).map(c=>normHeader(c.label||c.id||''));
-          const rows=(data.table?.rows||[]).map(r=> (r.c||[]).map(c=>c?c.v:''));
-          return rows.map((cells,i)=>{const o={}; cols.forEach((h,idx)=>o[h]=cells[idx]||''); return normalizeItem(o,i)})
-        }
-      }catch(e){console.warn('Falha na planilha', url, e)}
-    }
-    return null
-  }
-
-  // ===== Gerador de payload PIX (EMV QR)
-  function tlv(id, value){
-    const len = String(value.length).padStart(2,'0');
-    return `${id}${len}${value}`;
-  }
-  function crc16(str){
-    let crc = 0xFFFF;
-    for (let i=0;i<str.length;i++){
-      crc ^= (str.charCodeAt(i) << 8);
-      for (let j=0;j<8;j++){
-        crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
-        crc &= 0xFFFF;
-      }
-    }
-    return crc.toString(16).toUpperCase().padStart(4,'0');
-  }
-  function asciiClean(s){
-    return String(s||'')
-      .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // tira acentos
-      .replace(/[^\x20-\x7E]/g,'');                    // mantém ASCII visível
-  }
-  function formatPixKey(key){
-    let k = String(key||'').trim();
-    // se for telefone com 11 dígitos (DDD+numero), prefixa +55
-    if (/^\d{11}$/.test(k)) k = '+55' + k;
-    return k;
-  }
-  function buildPixPayload({key, amount, name, city, txid="", description=""}){
-    const nameU = asciiClean(name).toUpperCase().slice(0,25) || 'RECEBEDOR';
-    const cityU = asciiClean(city).toUpperCase().slice(0,15) || 'CIDADE';
-    const desc  = asciiClean(description).slice(0,99);
-
-    // Merchant Account Information (ID 26)
-    const gui   = tlv('00','BR.GOV.BCB.PIX');
-    const k     = tlv('01', formatPixKey(key));
-    const dsc   = desc ? tlv('02', desc) : '';
-    const mai   = tlv('26', gui + k + dsc);
-
-    // Campos raiz obrigatórios
-    const pfi   = tlv('00','01');     // Payload Format Indicator
-    const poim  = tlv('01','11');     // Point of Initiation Method: 11 = estático (ESSENCIAL)
-    const mcc   = tlv('52','0000');
-    const curr  = tlv('53','986');    // BRL
-    const amt   = amount ? tlv('54', Number(amount).toFixed(2)) : '';
-    const cc    = tlv('58','BR');
-    const nm    = tlv('59', nameU);
-    const ct    = tlv('60', cityU);
-    const add   = tlv('62', tlv('05', (asciiClean(txid)||'***').slice(0,25)));
-
-    const base  = pfi + poim + mai + mcc + curr + amt + cc + nm + ct + add + '6304';
-    const crc   = crc16(base);
-    return base + crc;
-  }
-
-  // Gera e exibe o modal com QR Code do PIX
-  function showPixModal({title, amount}){
-    if(!Number(amount)){ alert('Este item não possui valor definido.'); return; }
-
-    const payload = buildPixPayload({
-      key:  CONFIG.pixKey,
-      amount,
-      name: CONFIG.pixName,
-      city: CONFIG.pixCity,
-      txid: 'ITEM' + Date.now(),
-      description: title
-    });
-
-    const qrsrc = 'https://quickchart.io/qr?size=320&margin=2&text=' + encodeURIComponent(payload);
-
-    qs('#pixModalTitle').textContent   = 'Comprar: ' + title;
-    qs('#pixModalSubtitle').textContent= 'Valor: ' + fmtBRL(amount);
-    qs('#pixModalImg').src             = qrsrc;
-    qs('#pixModalCode').value          = payload;
-
-    qs('#pixModal').classList.add('show');
-  }
-  function hidePixModal(){ qs('#pixModal').classList.remove('show'); }
-  (function(){
-    const close = qs('#pixModalClose');
-    const copy  = qs('#pixCopyCode');
-
-    if (close) close.addEventListener('click', hidePixModal);
-
-    if (copy) copy.addEventListener('click', () => {
-      const code = qs('#pixModalCode')?.value || '';
-      navigator.clipboard.writeText(code).then(() => {
-        copy.textContent = 'Copiado!';
-        setTimeout(() => (copy.textContent = 'Copiar código Pix'), 1000);
-      });
-    });
-
-    const modal = qs('#pixModal');
-    if (modal) modal.addEventListener('click', e => {
-      if (e.target === modal) hidePixModal();
-    });
-  })();
+ <main class="wrap">
+ <!-- BOAS-VINDAS -->
+ 
+<section id="boasvindas" class="section intro">
+  <h2>Chá de Bebê da Sophie</h2>
+  <div class="subtitle">Vamos celebrar a chegada da nossa menina.</div>
+  <p>Este site é do chá de bebê da <strong>Sophie</strong>. Aqui você encontra nossa lista de presentes e também pode contribuir via Pix. O mais importante é o seu carinho — uma mensagem já nos deixa muito felizes. Obrigado por fazer parte deste momento!</p>
+  <p class="muted">Obs.: O QR Code de Pix é gerado automaticamente; por favor, confira os dados antes de confirmar.</p>
+</section>
 
 
-  // ===== Renderização dos cards
-  let ITEMS=[];
-  function buildCategoryFilter(){
-    const cats=Array.from(new Set(ITEMS.map(i=>i.categoria))).sort();
-    const sel=qs('#cat'); sel.innerHTML='';
-    sel.appendChild(el('option',{value:'*',innerText:'Todas as categorias'}));
-    cats.forEach(c=> sel.appendChild(el('option',{value:c, innerText:c})))
-  }
+ <!-- PIX -->
+ <section id="pix" class="section">
+ <div class="grid">
+ <div class="card">
+ <div class="body">
+ <div class="title">Contribuir via PIX</div>
+ <p class="muted">Se preferir, você pode presentear com qualquer valor via Pix. 💚</p>
 
-  function render(){
-    const term=qs('#q').value.toLowerCase().trim();
-    const cat=qs('#cat').value;
-    const only=qs('#onlyAvail').checked;
-    const sort=qs('#sort').value;
+ <!-- Chave PIX centralizada com botão ao lado -->
+ <div class="pix-row">
+ <span class="btn alt" id="pixKeyText">(configure a chave no código)</span>
+ <button class="btn" id="copyPix">Copiar chave</button>
+ </div>
 
-    let arr=[...ITEMS];
-    if(term) arr = arr.filter(i=> (i.titulo+" "+i.descricao+" "+i.categoria).toLowerCase().includes(term));
-    if(cat && cat!=="*") arr = arr.filter(i=> i.categoria===cat);
-    if(only) arr = arr.filter(i=> i.status==='disponivel');
+ <!-- QR code estático centralizado (opcional) -->
+ <div class="pix-qr">
+ <img id="pixQrImg" alt="QR Code Pix" style="max-width:320px;border-radius:12px;border:1px solid var(--edge)"/>
+ </div>
+ </div>
+ </div>
+ </div>
+ </section>
+ 
+ <!-- PRESENTES -->
+ <section id="presentes" class="section">
+ <div class="title">Lista de Presentes</div>
+ <p class="muted">Escolha um item e clique em <strong>Comprar</strong> para gerar o QR Code Pix com o valor exato do presente. ✨</p>
+ <div class="controls">
+ <input id="q" type="search" placeholder="Buscar por nome, categoria..."/>
+ <select id="cat"></select>
+ <select id="sort">
+ <option value="prioridade">Ordenar: prioridade</option>
+ <option value="preco-asc">Preço: menor → maior</option>
+ <option value="preco-desc">Preço: maior → menor</option>
+ <option value="titulo">A-Z</option>
+ </select>
+ <label style="display:inline-flex;gap:8px;align-items:center"><input id="onlyAvail" type="checkbox"/> <span class="tiny">Apenas disponíveis</span></label>
+ <button class="btn alt" id="refresh">Atualizar</button>
+ </div>
+ <div id="products" class="products"></div>
+ <div id="emptyState" class="muted" style="display:none">Nenhum item encontrado.</div>
+ </section>
+ 
 
-    if(sort==='preco-asc') arr.sort((a,b)=>a.preco-b.preco);
-    else if(sort==='preco-desc') arr.sort((a,b)=>b.preco-a.preco);
-    else if(sort==='titulo') arr.sort((a,b)=> a.titulo.localeCompare(b.titulo));
-    else arr.sort((a,b)=> a.prioridade-b.prioridade);
+ <!-- RSVP / LOCAL -->
+ <section id="rsvp" class="section">
+ <div class="grid">
+ <div class="card"><div class="body">
+ <div class="title">Contato</div>
+ <p class="muted">Use o botão abaixo para falar com a gente por WhatsApp. 💬</p>
+ <div class="toolbar">
+ <a class="btn alt" id="whatsContact" target="_blank" rel="noopener">Falar no Whats</a>
+ </div>
+ </div></div>
+ <div class="card"><div class="body">
+ <div class="title">Detalhes do Evento</div>
+ <div class="muted" id="dateFull"></div>
+ <div class="muted">Local: <strong id="venueFull">—</strong></div>
+ <div class="muted">Endereço: <strong id="address"></strong></div>
+ <div class="toolbar" style="margin-top:10px">
+ <a class="btn alt" id="venueMap2" target="_blank" rel="noopener">Abrir mapa</a>
+ </div>
+ </div></div>
+ </div>
+ </section>
 
-    const wrap=qs('#products'); wrap.innerHTML='';
-    if(arr.length===0){qs('#emptyState').style.display='block'; return} else qs('#emptyState').style.display='none';
+ <footer class="muted">Feito com carinho 💚 — publique no GitHub Pages (coloque <code>index.html</code>, <code>produtos.xlsx</code> e sua foto <code>hero.jpeg</code> na mesma pasta).</footer>
+ </main>
 
-    for(const it of arr){
-      const card = el('div',{className:'product'});
+ <!-- Modal PIX por produto -->
+ <div id="pixModal" class="modal" aria-hidden="true">
+ <div class="box">
+ <div class="row" style="justify-content:space-between">
+ <h3 id="pixModalTitle">Pagar com Pix</h3>
+ <button class="close" id="pixModalClose">Fechar</button>
+ </div>
+ <div class="muted" id="pixModalSubtitle"></div>
 
-      // imagem + overlay com descrição
-      const img = el('div',{className:'img'});
-      const picture = new Image();
-      picture.loading='lazy';
-      picture.referrerPolicy='no-referrer';
-      picture.src = (it.imagem&&it.imagem.trim())? it.imagem : DEFAULT_IMG;
-      picture.onerror = ()=>{picture.src=DEFAULT_IMG};
-      img.appendChild(picture);
-      if (it.descricao && it.descricao.trim()){
-        img.appendChild(el('div',{className:'hover-desc', innerText: it.descricao}));
-      }
+ <div class="qr"><img id="pixModalImg" alt="QR Code Pix" style="max-width:320px;border-radius:12px;border:1px solid var(--edge)"></div>
 
-      // conteúdo (sem descrição aqui)
-      const content = el('div',{className:'content'});
-      const title = el('div',{style:'font-weight:600; font-size:18px', innerText: it.titulo});
-      const price= el('div',{className:'price', innerText: it.preco? fmtBRL(it.preco): '—'});
-      let host=''; try{ if(it.link) host = new URL(it.link, location.href).hostname.replace(/^www\./,''); }catch{}
-      const tiny = el('div',{className:'tiny', innerText: host});
+ <textarea id="pixModalCode" class="code" readonly></textarea>
+ <div class="actions">
+ <button class="btn alt" id="pixCopyCode">Copiar código Pix</button>
+ </div>
+ </div>
+ </div>
 
-      // ÚNICO botão "Comprar" -> abre modal com QR Pix
-      const actions = el('div',{className:'actions'});
-      const btnComprar = el('button',{className:'btn', innerText:'Comprar'});
-      btnComprar.addEventListener('click', ()=> showPixModal({ title: it.titulo, amount: it.preco }));
-      actions.append(btnComprar);
+ <script>
+ // =====================
+ // CONFIGURAÇÕES
+ // =====================
+ const CONFIG = {
+ babyName: "Sophie",
+ initialsLogo: "K + T",
+ coupleNames: "Kelvin & Tamaiale",
+ dateNumbers: "27 · 08 · 2025",
+ eventDateISO: "2025-08-27T12:00:00-03:00",
+ venueName: "Cartório Vitória",
+ venueAddress: "R. Professor Martagão Gesteira, 477 - Graça, Salvador",
+ mapsLink: "https://www.google.com/maps/place/Cart%C3%B3rio+de+Registro+Civil+das+Pessoas+Naturais+do+Subdistrito+da+Vit%C3%B3ria/@-13.002347,-38.522519,17z",
 
-      content.append(title, price, tiny, actions);
-      card.append(img, content);
-      wrap.appendChild(card);
-    }
-  }
+ // IMAGEM DO TOPO
+ heroImage: "hero.jpeg",
 
-  // ===== INIT
-  async function init(){
-    // cabeçalho & textos
-    document.title = `${CONFIG.coupleNames} — ${CONFIG.dateNumbers}`;
-    qs('.brand').firstChild && (qs('.brand').firstChild.textContent = CONFIG.initialsLogo);
-    qs('.hero-date').textContent = CONFIG.dateNumbers;
-    qs('.hero-names').textContent = CONFIG.coupleNames;
-    qs('#dateFull').textContent = new Date(CONFIG.weddingDateISO).toLocaleString('pt-BR',{weekday:'long', day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'});
-    qs('#venueFull').textContent = CONFIG.venueName;
-    qs('#address').textContent = CONFIG.venueAddress;
-    qs('#venueMap2').href = CONFIG.mapsLink;
+ // Contato / RSVP / PIX
+ whatsappNumber: "71988183846",
+ rsvpFormUrl: "https://forms.gle/",
+ pixKey: "+5571988183846",
+ // Nome e cidade impressos no payload PIX ( ALTA, limites oficiais)
+ pixName: "KELVIN KEFREN CARVALHO FE", // máx. 25 chars
+ pixCity: "SALVADOR", // máx. 15 chars
 
-    // PIX (seção)
-    qs('#pixKeyText').textContent = CONFIG.pixKey || '—';
-    if(CONFIG.pixQrImageUrl){ qs('#pixQrImg').src = CONFIG.pixQrImageUrl; }
-    qs('#copyPix').onclick = ()=>{ navigator.clipboard.writeText(CONFIG.pixKey||'').then(()=>{ const b=qs('#copyPix'); const t=b.textContent; b.textContent='Copiado!'; setTimeout(()=>b.textContent=t, 1200) }) };
+ // QR estático opcional na seção PIX
+ pixQrImageUrl: "bradesco.png",
 
-    // HERO image
-    const heroEl = document.getElementById('heroImageEl'); heroEl.setAttribute('href', CONFIG.heroImage);
+ // Planilha: escolha SÓ UMA fonte (xlsx local OU sheetUrl)
+ sheetUrl: "",
+ localExcelFile: "produtos.xlsx",
+ localCsvFile: "",
+ moeda: "BRL",
+ autoRefreshMinutes: 5
+ };
 
-    // Dados dos produtos
-    let data = null; try{ data = await fetchSheet(); }catch(e){ console.warn('fetchSheet err', e)}
-    if(!Array.isArray(data) || data.length===0){ console.warn('Planilha vazia/erro.'); data = [] }
-    ITEMS = data; buildCategoryFilter(); render();
+ // ========= Utils
+ const qs = s => document.querySelector(s);
+ const el = (tag, attrs={}) => Object.assign(document.createElement(tag), attrs);
+ const fmtBRL = v => new Intl.NumberFormat('pt-BR',{style:'currency',currency:CONFIG.moeda}).format((v===undefined||v===null||isNaN(v))?0:Number(v));
+ const DEFAULT_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600'><rect fill='%23eee' width='100%' height='100%'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-family='sans-serif' font-size='24'>Sem imagem</text></svg>";
 
-    // filtros/listeners
-    ['q','cat','sort','onlyAvail'].forEach(id=> qs('#'+id).addEventListener(id==='q'?'input':'change', render));
-    qs('#refresh').onclick = async()=>{ const d = await fetchSheet(); if(Array.isArray(d)){ ITEMS=d; buildCategoryFilter(); render(); }}
-    if(CONFIG.autoRefreshMinutes>0){ setInterval(async()=>{ const d = await fetchSheet(); if(Array.isArray(d)){ ITEMS=d; buildCategoryFilter(); render(); } }, CONFIG.autoRefreshMinutes*60000)}
-  }
-  window.addEventListener('DOMContentLoaded', init);
-  </script>
+ function normHeader(h){return String(h||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'').trim()}
+ function splitCSV(line){const out=[];let cur='';let q=false;for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){q=!q;continue}if(ch===','&&!q){out.push(cur);cur='';continue}cur+=ch}out.push(cur);return out.map(s=>s.trim())}
+ function toNumber(x){if(typeof x==='number') return x; if(!x) return 0; const s=String(x).replace(/[^0-9,.-]/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',', '.'); const n=parseFloat(s); return isNaN(n)?0:n}
+ function normalizeItem(o,i){const map={};for(const k in o) map[normHeader(k)]=o[k];return {
+ id:String(map.id||i+1), status:String(map.status||'disponivel').toLowerCase().trim(),
+ categoria:String(map.categoria||'Outros').trim(), titulo:String(map.titulo||'Item').trim(),
+ descricao:String(map.descricao||'').trim(), preco:toNumber(map.preco),
+ link:String(map.link||map.loja||'').trim(), imagem:String(map.imagem||map.foto||'').trim(),
+ prioridade: parseInt(map.prioridade||(i+1),10) || (i+1)
+ }}
+
+ // ====== Leitura da planilha (xlsx/csv/sheets)
+ async function fetchSheet(){
+ // 1) XLSX local
+ if (CONFIG.localExcelFile && CONFIG.localExcelFile.trim()){
+ const buf = await fetch(CONFIG.localExcelFile).then(r=>{if(!r.ok) throw new Error('Falha ao carregar '+CONFIG.localExcelFile); return r.arrayBuffer()});
+ const wb = XLSX.read(buf, {type:'array'});
+ let ws = wb.Sheets[wb.SheetNames[0]];
+ for (const n of wb.SheetNames){const rows = XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, defval:''});if(rows.length>1){ws = wb.Sheets[n];break}}
+ const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+ const headers = (rows.shift()||[]).map(normHeader);
+ return rows.filter(r=>r.some(v=>String(v).trim().length>0)).map((cells,i)=>{const o={}; headers.forEach((h,idx)=>o[h]=cells[idx]??''); return normalizeItem(o,i)})
+ }
+ // 2) CSV local
+ if (CONFIG.localCsvFile && CONFIG.localCsvFile.trim()){
+ const text = await fetch(CONFIG.localCsvFile).then(r=>{if(!r.ok) throw new Error('Falha ao carregar '+CONFIG.localCsvFile); return r.text()});
+ const rows = text.split(/\r?\n/).filter(Boolean).map(splitCSV);
+ const headers = (rows.shift()||[]).map(normHeader);
+ return rows.map((cells,i)=>{const o={}; headers.forEach((h,idx)=>o[h]=cells[idx]||''); return normalizeItem(o,i)})
+ }
+ // 3) Google Sheets (opcional)
+ if (!CONFIG.sheetUrl) return null;
+ const raw = CONFIG.sheetUrl.trim();
+ const urls = [/^https?:/.test(raw)? raw : `https://docs.google.com/spreadsheets/d/${raw}/gviz/tq?tqx=out:json`, 'https://r.jina.ai/http://'+raw.replace(/^https?:\/\//,'')];
+ for (const url of urls){
+ try{
+ const text = await fetch(url).then(r=>{if(!r.ok) throw new Error('HTTP '+r.status); return r.text()});
+ if(url.includes('tqx=out:json')){
+ const start=text.indexOf('{'); const end=text.lastIndexOf('}'); if(start<0||end<0) continue;
+ const data = JSON.parse(text.slice(start,end+1));
+ const cols=(data.table?.cols||[]).map(c=>normHeader(c.label||c.id||''));
+ const rows=(data.table?.rows||[]).map(r=> (r.c||[]).map(c=>c?c.v:''));
+ return rows.map((cells,i)=>{const o={}; cols.forEach((h,idx)=>o[h]=cells[idx]||''); return normalizeItem(o,i)})
+ }
+ }catch(e){console.warn('Falha na planilha', url, e)}
+ }
+ return null
+ }
+
+ // ===== Gerador de payload PIX (EMV QR)
+ function tlv(id, value){
+ const len = String(value.length).padStart(2,'0');
+ return `${id}${len}${value}`;
+ }
+ function crc16(str){
+ let crc = 0xFFFF;
+ for (let i=0;i<str.length;i++){
+ crc ^= (str.charCodeAt(i) << 8);
+ for (let j=0;j<8;j++){
+ crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
+ crc &= 0xFFFF;
+ }
+ }
+ return crc.toString(16).toUpperCase().padStart(4,'0');
+ }
+ function asciiClean(s){
+ return String(s||'')
+ .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // tira acentos
+ .replace(/[^\x20-\x7E]/g,''); // mantém ASCII visível
+ }
+ function formatPixKey(key){
+ let k = String(key||'').trim();
+ // se for telefone com 11 dígitos (DDD+numero), prefixa +55
+ if (/^\d{11}$/.test(k)) k = '+55' + k;
+ return k;
+ }
+ function buildPixPayload({key, amount, name, city, txid="", description=""}){
+ const nameU = asciiClean(name).toUpperCase().slice(0,25) || 'RECEBEDOR';
+ const cityU = asciiClean(city).toUpperCase().slice(0,15) || 'CIDADE';
+ const desc = asciiClean(description).slice(0,99);
+
+ // Merchant Account Information (ID 26)
+ const gui = tlv('00','BR.GOV.BCB.PIX');
+ const k = tlv('01', formatPixKey(key));
+ const dsc = desc ? tlv('02', desc) : '';
+ const mai = tlv('26', gui + k + dsc);
+
+ // Campos raiz obrigatórios
+ const pfi = tlv('00','01'); // Payload Format Indicator
+ const poim = tlv('01','11'); // Point of Initiation Method: 11 = estático (ESSENCIAL)
+ const mcc = tlv('52','0000');
+ const curr = tlv('53','986'); // BRL
+ const amt = amount ? tlv('54', Number(amount).toFixed(2)) : '';
+ const cc = tlv('58','BR');
+ const nm = tlv('59', nameU);
+ const ct = tlv('60', cityU);
+ const add = tlv('62', tlv('05', (asciiClean(txid)||'***').slice(0,25)));
+
+ const base = pfi + poim + mai + mcc + curr + amt + cc + nm + ct + add + '6304';
+ const crc = crc16(base);
+ return base + crc;
+ }
+
+ // Gera e exibe o modal com QR Code do PIX
+ function showPixModal({title, amount}){
+ if(!Number(amount)){ alert('Este item não possui valor definido.'); return; }
+
+ const payload = buildPixPayload({
+ key: CONFIG.pixKey,
+ amount,
+ name: CONFIG.pixName,
+ city: CONFIG.pixCity,
+ txid: 'ITEM' + Date.now(),
+ description: title
+ });
+
+ const qrsrc = 'https://quickchart.io/qr?size=320&margin=2&text=' + encodeURIComponent(payload);
+
+ qs('#pixModalTitle').textContent = 'Comprar: ' + title;
+ qs('#pixModalSubtitle').textContent= 'Valor: ' + fmtBRL(amount);
+ qs('#pixModalImg').src = qrsrc;
+ qs('#pixModalCode').value = payload;
+
+ qs('#pixModal').classList.add('show');
+ }
+ function hidePixModal(){ qs('#pixModal').classList.remove('show'); }
+ (function(){
+ const close = qs('#pixModalClose');
+ const copy = qs('#pixCopyCode');
+
+ if (close) close.addEventListener('click', hidePixModal);
+
+ if (copy) copy.addEventListener('click', () => {
+ const code = qs('#pixModalCode')?.value || '';
+ navigator.clipboard.writeText(code).then(() => {
+ copy.textContent = 'Copiado!';
+ setTimeout(() => (copy.textContent = 'Copiar código Pix'), 1000);
+ });
+ });
+
+ const modal = qs('#pixModal');
+ if (modal) modal.addEventListener('click', e => {
+ if (e.target === modal) hidePixModal();
+ });
+ })();
+
+ // ===== Renderização dos cards
+ let ITEMS=[];
+ function buildCategoryFilter(){
+ const cats=Array.from(new Set(ITEMS.map(i=>i.categoria))).sort();
+ const sel=qs('#cat'); sel.innerHTML='';
+ sel.appendChild(el('option',{value:'*',innerText:'Todas as categorias'}));
+ cats.forEach(c=> sel.appendChild(el('option',{value:c, innerText:c})))
+ }
+
+ function render(){
+ const term=qs('#q').value.toLowerCase().trim();
+ const cat=qs('#cat').value;
+ const only=qs('#onlyAvail').checked;
+ const sort=qs('#sort').value;
+
+ let arr=[...ITEMS];
+ if(term) arr = arr.filter(i=> (i.titulo+" "+i.descricao+" "+i.categoria).toLowerCase().includes(term));
+ if(cat && cat!=="*") arr = arr.filter(i=> i.categoria===cat);
+ if(only) arr = arr.filter(i=> i.status==='disponivel');
+
+ if(sort==='preco-asc') arr.sort((a,b)=>a.preco-b.preco);
+ else if(sort==='preco-desc') arr.sort((a,b)=>b.preco-a.preco);
+ else if(sort==='titulo') arr.sort((a,b)=> a.titulo.localeCompare(b.titulo));
+ else arr.sort((a,b)=> a.prioridade-b.prioridade);
+
+ const wrap=qs('#products'); wrap.innerHTML='';
+ if(arr.length===0){qs('#emptyState').style.display='block'; return} else qs('#emptyState').style.display='none';
+
+ for(const it of arr){
+ const card = el('div',{className:'product'});
+
+ // imagem + overlay com descrição
+ const img = el('div',{className:'img'});
+ const picture = new Image();
+ picture.loading='lazy';
+ picture.referrerPolicy='no-referrer';
+ picture.src = (it.imagem&&it.imagem.trim())? it.imagem : DEFAULT_IMG;
+ picture.onerror = ()=>{picture.src=DEFAULT_IMG};
+ img.appendChild(picture);
+ if (it.descricao && it.descricao.trim()){
+ img.appendChild(el('div',{className:'hover-desc', innerText: it.descricao}));
+ }
+
+ // conteúdo (sem descrição aqui)
+ const content = el('div',{className:'content'});
+ const title = el('div',{style:'font-weight:600; font-size:18px', innerText: it.titulo});
+ const price= el('div',{className:'price', innerText: it.preco? fmtBRL(it.preco): '—'});
+ let host=''; try{ if(it.link) host = new URL(it.link, location.href).hostname.replace(/^www\./,''); }catch{}
+ const tiny = el('div',{className:'tiny', innerText: host});
+
+ // ÚNICO botão "Comprar" -> abre modal com QR Pix
+ const actions = el('div',{className:'actions'});
+ const btnComprar = el('button',{className:'btn', innerText:'Comprar'});
+ btnComprar.addEventListener('click', ()=> showPixModal({ title: it.titulo, amount: it.preco }));
+ actions.append(btnComprar);
+
+ content.append(title, price, tiny, actions);
+ card.append(img, content);
+ wrap.appendChild(card);
+ }
+ }
+
+ // ===== INIT
+ async function init(){
+ // cabeçalho & textos
+ document.title = `${CONFIG.coupleNames} — ${CONFIG.dateNumbers}`;
+ qs('.brand').firstChild && (qs('.brand').firstChild.textContent = CONFIG.initialsLogo);
+ qs('.hero-date').textContent = CONFIG.dateNumbers;
+ qs('.hero-names').textContent = CONFIG.coupleNames;
+ qs('#dateFull').textContent = new Date(CONFIG.eventDateISO).toLocaleString('pt-BR',{weekday:'long', day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'});
+ qs('#venueFull').textContent = CONFIG.venueName;
+ qs('#address').textContent = CONFIG.venueAddress;
+ qs('#venueMap2').href = CONFIG.mapsLink;
+
+ // PIX (seção)
+ qs('#pixKeyText').textContent = CONFIG.pixKey || '—';
+ if(CONFIG.pixQrImageUrl){ qs('#pixQrImg').src = CONFIG.pixQrImageUrl; }
+ qs('#copyPix').onclick = ()=>{ navigator.clipboard.writeText(CONFIG.pixKey||'').then(()=>{ const b=qs('#copyPix'); const t=b.textContent; b.textContent='Copiado!'; setTimeout(()=>b.textContent=t, 1200) }) };
+
+ // HERO image
+ const heroEl = document.getElementById('heroImageEl'); heroEl.setAttribute('href', CONFIG.heroImage);
+
+ // Dados dos produtos
+ let data = null; try{ data = await fetchSheet(); }catch(e){ console.warn('fetchSheet err', e)}
+ if(!Array.isArray(data) || data.length===0){ console.warn('Planilha vazia/erro.'); data = [] }
+ ITEMS = data; buildCategoryFilter(); render();
+
+ // filtros/listeners
+ ['q','cat','sort','onlyAvail'].forEach(id=> qs('#'+id).addEventListener(id==='q'?'input':'change', render));
+ qs('#refresh').onclick = async()=>{ const d = await fetchSheet(); if(Array.isArray(d)){ ITEMS=d; buildCategoryFilter(); render(); }}
+ if(CONFIG.autoRefreshMinutes>0){ setInterval(async()=>{ const d = await fetchSheet(); if(Array.isArray(d)){ ITEMS=d; buildCategoryFilter(); render(); } }, CONFIG.autoRefreshMinutes*60000)}
+ }
+ window.addEventListener('DOMContentLoaded', init);
+ </script>
+
+<script>
+ (function(){
+ function fmt(n){return String(Math.floor(n)).padStart(2,'0')}
+ function tick(){
+ try{
+ var iso = (window.CONFIG && (CONFIG.eventDateISO || CONFIG.eventDateISO)) || "2025-10-12T15:30:00-03:00";
+ var t = new Date(iso).getTime() - Date.now();
+ if (t < 0) { document.getElementById('heroCountdown').textContent = "0d 00h 00m 00s"; return; }
+ var d = t/86400000, h = (d%1)*24, m = (h%1)*60, s=(m%1)*60;
+ document.getElementById('heroCountdown').textContent = Math.floor(d)+"d "+fmt(h)+"h "+fmt(m)+"m "+fmt(s)+"s";
+ }catch(e){}
+ }
+ setInterval(tick, 1000); tick();
+ })();
+</script>
+
 </body>
 </html>
