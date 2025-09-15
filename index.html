@@ -208,28 +208,28 @@
 
     function rowTpl(item, idx){
       const isRes = !!reserved[item.nome];
-      const img = (item.imagem && String(item.imagem).trim()) ? String(item.imagem).trim() : PLACEHOLDER_IMG;
-      const imgEl = item.url ? `<a href="${esc(item.url)}" target="_blank" rel="noopener"><img src="${esc(img)}" alt="${esc(item.nome)}" class="w-20 h-20 object-cover rounded-md border border-slate-200 bg-white"/></a>`
-                             : `<img src="${esc(img)}" alt="${esc(item.nome)}" class="w-20 h-20 object-cover rounded-md border border-slate-200 bg-white"/>`;
+
+      // higieniza URL da imagem (evita http -> mixed content)
+      function cleanImageUrl(u){
+        if(!u) return '';
+        let s = String(u).trim();
+        if (s.startsWith('http://')) s = 'https://' + s.slice(7);
+        return s;
+      }
+
+      const imgRaw = cleanImageUrl(item.imagem);
+      const fallbackUnsplash = 'https://source.unsplash.com/600x600?' + encodeURIComponent((item.nome||'bebe').replace(/[^a-zA-Z0-9\s]/g,''));
+      const imgSrc = imgRaw || PLACEHOLDER_IMG;
+
+      const imgTag = (src)=> `\n        <img src="${esc(src)}" alt="${esc(item.nome)}"\n             class=\"w-20 h-20 object-cover rounded-md border border-slate-200 bg-white\"\n             referrerpolicy=\"no-referrer\" loading=\"lazy\"\n             onerror=\"this.onerror=null; this.src='${fallbackUnsplash}'\"/>`;
+
+      const imgEl = item.url
+        ? `<a href="${esc(item.url)}" target="_blank" rel="noopener">${imgTag(imgSrc)}</a>`
+        : imgTag(imgSrc);
+
       const reserveHref = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.reserveText)}${encodeURIComponent(item.nome)}%20-%20${encodeURIComponent(item.detalhe||'')}`;
       return `
-        <tr class="align-top">
-          <td class="py-3 px-3">${imgEl}</td>
-          <td class="py-3 px-3 font-medium">${esc(item.nome)}</td>
-          <td class="py-3 px-3 text-slate-600">${esc(item.detalhe||'-')}</td>
-          <td class="py-3 px-3">${fmtBRL(item.valor)}</td>
-          <td class="py-3 px-3">
-            <button data-idx="${idx}" class="toggleRes px-3 py-1 rounded-lg border ${isRes? 'bg-green-50 border-green-300 text-green-700' : 'border-slate-300 text-slate-700 hover:bg-white'}">
-              ${isRes? 'Marcado (local)' : 'Marcar' }
-            </button>
-          </td>
-          <td class="py-3 px-3 space-x-2">
-            <a target="_blank" class="reserveLink inline-flex items-center justify-center rounded-lg px-3 py-1 text-white" style="background:linear-gradient(135deg, var(--brand), var(--brand2));" href="${reserveHref}">
-              Reservar no WhatsApp
-            </a>
-            ${item.url ? `<a target="_blank" href="${esc(item.url)}" class="inline-flex items-center justify-center rounded-lg px-3 py-1 border border-slate-300 text-slate-700 hover:bg-white">Ver produto</a>` : ''}
-          </td>
-        </tr>`;
+        <tr class=\"align-top\">\n          <td class=\"py-3 px-3\">${imgEl}</td>\n          <td class=\"py-3 px-3 font-medium\">${esc(item.nome)}</td>\n          <td class=\"py-3 px-3 text-slate-600\">${esc(item.detalhe||'-')}</td>\n          <td class=\"py-3 px-3\">${fmtBRL(item.valor)}</td>\n          <td class=\"py-3 px-3\">\n            <button data-idx=\"${idx}\" class=\"toggleRes px-3 py-1 rounded-lg border ${isRes? 'bg-green-50 border-green-300 text-green-700' : 'border-slate-300 text-slate-700 hover:bg-white'}\">\n              ${isRes? 'Marcado (local)' : 'Marcar' }\n            </button>\n          </td>\n          <td class=\"py-3 px-3 space-x-2\">\n            <a target=\"_blank\" class=\"reserveLink inline-flex items-center justify-center rounded-lg px-3 py-1 text-white\" style=\"background:linear-gradient(135deg, var(--brand), var(--brand2));\" href=\"${reserveHref}\">\n              Reservar no WhatsApp\n            </a>\n            ${item.url ? `<a target=\"_blank\" href=\"${esc(item.url)}\" class=\"inline-flex items-center justify-center rounded-lg px-3 py-1 border border-slate-300 text-slate-700 hover:bg-white\">Ver produto</a>` : ''}\n          </td>\n        </tr>`;
     }
 
     function renderGiftTable(list){
@@ -248,28 +248,56 @@
     async function loadFromXLSX(){
       // cache-buster para evitar cache do GitHub Pages
       const res = await fetch('produtos.xlsx?v=' + Date.now());
+      if (!res.ok) throw new Error('Falha ao baixar produtos.xlsx');
       const arrayBuffer = await res.arrayBuffer();
       const workbook = XLSX.read(arrayBuffer, {type:'array'});
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(sheet, {defval:'', raw:true});
-      const list = rows.map(r=>({
-        nome:    r.nome||r.item||r.Nome||r.Item||'',
-        detalhe: r.detalhe||r.descricao||r.Descrição||r.Detalhe||'',
-        valor:   r.valor||r.preco||r.Preço||r.Valor||'',
-        imagem:  r.imagem||r.Imagem||r.image||r.foto||r.Foto||'',
-        url:     r.url||r.link||r.Link||r.URL||''
-      }));
-      return list.filter(x=>x.nome);
+
+      // normaliza chaves (remove acento, espaços) e mapeia para campos esperados
+      const norm = (row)=>{
+        const flat = {};
+        for (const [k,v] of Object.entries(row)){
+          const nk = String(k).trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+          flat[nk] = v;
+        }
+        return {
+          nome:    flat['nome'] || flat['item'] || '',
+          detalhe: flat['detalhe'] || flat['descricao'] || flat['descricao'] || '',
+          valor:   flat['valor'] || flat['preco'] || flat['preco'] || '',
+          imagem:  flat['imagem'] || flat['image'] || flat['foto'] || '',
+          url:     flat['url'] || flat['link'] || ''
+        }
+      };
+
+      const list = rows.map(norm).filter(x=>x.nome);
+
+      // log de diagnóstico no console para ajudar
+      console.log('[Lista] itens carregados:', list.length);
+      if (list.length) {
+        console.log('[Lista] exemplo do campo imagem:', list[0].imagem);
+      }
+      return list;
     }
 
     async function bootGifts(){
-      const list = await loadFromXLSX();
-      renderGiftTable(list);
+      try{
+        const list = await loadFromXLSX();
+        renderGiftTable(list);
+      }catch(err){
+        console.error('Erro ao carregar/renderizar lista:', err);
+      }
     }
 
     // init
     (function init(){
-      buildLinks();
+      document.getElementById('dtText').textContent = CONFIG.datetimeText;
+      document.getElementById('pixKey').textContent = CONFIG.pixKey;
+      document.getElementById('mapLink').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONFIG.mapsQuery)}`;
+      document.getElementById('whatsBtn').href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.rsvpText)}`;
+      document.getElementById('rsvpBtn').href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.rsvpText)}`;
+      document.getElementById('ano').textContent = new Date().getFullYear();
+
       startCountdown();
       bootGifts();
     })();
