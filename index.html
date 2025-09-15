@@ -24,17 +24,33 @@
       --shadow:0 10px 30px rgba(0,0,0,.12);
     }
     *{box-sizing:border-box}
-    html,body{margin:0; color:var(--ink); font-family:"Cormorant Garamond", ui-serif, Georgia, serif; background:var(--paper);}
-    body:before{content:""; position:fixed; inset:0; pointer-events:none; opacity:.30; mix-blend-mode:multiply;
+    html,body{
+      margin:0;
+      color:var(--ink);
+      font-family:"Cormorant Garamond", ui-serif, Georgia, serif;
+
+      /* cor base */
+      background-color:#fdeff4;
+
+      /* 1) máscara (some a imagem nos 30% finais)
+        2) véu de legibilidade
+        3) imagem das rosas
+      */
       background-image:
-        radial-gradient(1000px 600px at -10% -5%, var(--paper-2), transparent 55%),
-        radial-gradient(900px 600px at 110% 110%, var(--paper-2), transparent 55%),
-        radial-gradient(2px 2px at 20% 40%, rgba(0,0,0,.06), transparent 55%),
-        radial-gradient(2px 2px at 70% 60%, rgba(0,0,0,.05), transparent 55%),
-        radial-gradient(3px 3px at 40% 85%, rgba(0,0,0,.04), transparent 55%),
-        radial-gradient(3px 3px at 85% 25%, rgba(0,0,0,.04), transparent 55%);
-      background-repeat:no-repeat;
+        linear-gradient(to bottom,
+          rgba(253,239,244,0) 0 70%,
+          rgba(253,239,244,1) 70% 100%),
+        linear-gradient(rgba(255,255,255,.78), rgba(255,255,255,.78)),
+        url('rosas.png');
+
+      /* >>> ajustes que evitam o “tapete rosé” no fim <<< */
+      background-attachment: fixed, fixed, fixed;   /* camadas alinhadas à viewport */
+      background-repeat: no-repeat, no-repeat, repeat; /* imagem repete também no Y */
+      background-position: top center, top center, top center;
+      background-size: 100% 100%, 100% 100%, 900px auto; /* ajuste 900px conforme seu gosto */
     }
+
+
 
     /* Intro / Boas-vindas antes dos produtos */
     .intro{ text-align:center; }
