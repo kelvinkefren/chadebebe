@@ -38,8 +38,8 @@
       */
       background-image:
         linear-gradient(to bottom,
-          rgba(253,239,244,0) 0 70%,
-          rgba(253,239,244,1) 70% 100%),
+          rgba(253,239,244,0) 0 100%,
+          rgba(253,239,244,1) 100% 100%),
         linear-gradient(rgba(255,255,255,.78), rgba(255,255,255,.78)),
         url('rosas.png');
 
@@ -201,6 +201,8 @@
 
   <!-- HERO com máscara "papel rasgado" -->
   <header class="hero" id="topo">
+      <div class="grid">
+        <div class="card">
     <div class="torn-wrap">
       <svg class="torn" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" aria-label="Foto do casal">
         <defs>
@@ -220,7 +222,7 @@
       <div class="hero-overlay">
         <div class="hero-date">27 · 08 · 2025</div>
         <div class="hero-names">Kelvin & Tamaiale</div>
-      </div>
+      </div>      </div>      </div>
     </div>
   </header>
 
@@ -297,6 +299,8 @@
     
     <!-- PRESENTES -->
     <section id="presentes" class="section">
+      <div class="grid">
+        <div class="card">
       <div class="title">Lista de Presentes</div>
       <p class="muted">Escolha um item e clique em <strong>Comprar</strong> para gerar o QR Code Pix com o valor exato do presente. ✨</p>
       <div class="controls">
@@ -310,7 +314,7 @@
         </select>
         <label style="display:inline-flex;gap:8px;align-items:center"><input id="onlyAvail" type="checkbox"/> <span class="tiny">Apenas disponíveis</span></label>
         <button class="btn alt" id="refresh">Atualizar</button>
-      </div>
+      </div>      </div>      </div>
       <div id="products" class="products"></div>
       <div id="emptyState" class="muted" style="display:none">Nenhum item encontrado.</div>
     </section>
