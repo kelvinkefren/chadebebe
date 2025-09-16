@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kelvin & Tamaiale — 27/08/2025</title>
-  <meta name="description" content="Site do casamento — fotos, presentes, PIX e confirmação de presença." />
+  <title>Kelvin & Tamaiale — 21/09/2025</title>
+  <meta name="description" content="Site do chá de bebê — fotos, presentes, PIX e confirmação de presença." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -220,7 +220,7 @@
         <image id="heroImageEl" clip-path="url(#tornMask)" href="" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" y="50"/>
       </svg>
       <div class="hero-overlay">
-        <div class="hero-date">27 · 08 · 2025</div>
+        <div class="hero-date">21 · 09 · 2025</div>
         <div class="hero-names">Kelvin & Tamaiale</div>
       </div>      </div>      </div>
     </div>
@@ -241,6 +241,30 @@
         </div>
       </div>
     </section>
+
+    <!-- PRESENTES -->
+    <section id="presentes" class="section">
+      <div class="grid">
+        <div class="card">
+      <div class="title">Lista de Presentes</div>
+      <p class="muted">Escolha um item e clique em <strong>Comprar</strong> para gerar o QR Code Pix com o valor exato do presente. ✨</p>
+      <div class="controls">
+        <input id="q" type="search" placeholder="Buscar por nome, categoria..."/>
+        <select id="cat"></select>
+        <select id="sort">
+          <option value="prioridade">Ordenar: prioridade</option>
+          <option value="preco-asc">Preço: menor → maior</option>
+          <option value="preco-desc">Preço: maior → menor</option>
+          <option value="titulo">A-Z</option>
+        </select>
+        <label style="display:inline-flex;gap:8px;align-items:center"><input id="onlyAvail" type="checkbox"/> <span class="tiny">Apenas disponíveis</span></label>
+        <button class="btn alt" id="refresh">Atualizar</button>
+      </div> 
+      <div id="products" class="products"></div>
+      <div id="emptyState" class="muted" style="display:none">Nenhum item encontrado.</div>
+           </div>      </div>
+    </section>
+  
 
     <!-- PIX -->
     <section id="pix" class="section">
@@ -265,29 +289,6 @@
       </div>
     </section>
     
-    <!-- PRESENTES -->
-    <section id="presentes" class="section">
-      <div class="grid">
-        <div class="card">
-      <div class="title">Lista de Presentes</div>
-      <p class="muted">Escolha um item e clique em <strong>Comprar</strong> para gerar o QR Code Pix com o valor exato do presente. ✨</p>
-      <div class="controls">
-        <input id="q" type="search" placeholder="Buscar por nome, categoria..."/>
-        <select id="cat"></select>
-        <select id="sort">
-          <option value="prioridade">Ordenar: prioridade</option>
-          <option value="preco-asc">Preço: menor → maior</option>
-          <option value="preco-desc">Preço: maior → menor</option>
-          <option value="titulo">A-Z</option>
-        </select>
-        <label style="display:inline-flex;gap:8px;align-items:center"><input id="onlyAvail" type="checkbox"/> <span class="tiny">Apenas disponíveis</span></label>
-        <button class="btn alt" id="refresh">Atualizar</button>
-      </div> 
-      <div id="products" class="products"></div>
-      <div id="emptyState" class="muted" style="display:none">Nenhum item encontrado.</div>
-           </div>      </div>
-    </section>
-  
 
     <!-- RSVP / LOCAL -->
     <section id="rsvp" class="section">
